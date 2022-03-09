@@ -1,5 +1,5 @@
 import * as React from 'react';
-import FotoHome from "../images/FotoHome.png";
+import FotoHome from "./images/FotoHome.png";
 
 export default function HomePage(){
 

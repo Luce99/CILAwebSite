@@ -25,32 +25,20 @@ code {
   justify-content: space-between;
 }
 
-.home {
+.nav {
   padding: 0.5rem 1rem;
-  transition: 1s
+  transition: 1s;
+  font-weight: bold;
 }
-.home :hover{
-  color: #f20a95;
-}
-
-.productos :hover{
-  color: #f20a95;
-}
-
-.login {
-  padding: 0.6rem 1.1rem;
-}
-
-.login :hover{
+.nav :hover{
   color: #f20a95;
 }
 
 .cart {
-  padding: 0.6rem 1.1rem;
+  padding: 0.6rem 1rem;
 }
-
 .cart :hover{
-  color: #f20a95;
+  color: aqua;
 }
 
 .account {
@@ -94,7 +82,7 @@ code {
 
 }
 
-h1 {
+h3 {
   font-size: 3rem;
   text-align: center;
   color: white;
@@ -102,7 +90,7 @@ h1 {
 
 }
 
-h2 {
+h4 {
   margin-top: 2rem;
   font-size: 3rem;
   text-align: center;

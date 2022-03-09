@@ -19,7 +19,11 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Products() {
   return (
     <div>
-    <h2>PRODUCTOS ~~~ PRODUCTOS ~~~ PRODUCTOS</h2>
+      <Grid container spacing={2}>
+       <Grid item xs={12}>
+    <h1>PRODUCTOS</h1>
+    </Grid>
+    </Grid>
     <Box sx={{ flexGrow: 1 }} className="contenedor" >
       
       <Grid container spacing={2} className="products">

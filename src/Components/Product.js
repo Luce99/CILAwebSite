@@ -12,9 +12,25 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddShoppingCart from '@mui/icons-material/AddShoppingCart';
 import accounting from 'accounting';
+import { makeStyles } from "@mui/styles";
 import * as image from "./images/index.js";
 
+// const useStyles = makeStyles((theme) => ({
 
+//   root :{
+//     maxwidth: 345,
+//     backgroundColor: "#09b588",
+//     color: "#ffffff" 
+//   },
+//   action :{
+//     marrginTop: "1rem",
+//   },
+//   media: {
+//     height: 0,
+//     padingTop: "56.25%",
+//   }
+
+// }))
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -37,7 +53,7 @@ export default function Product({product: {id, name, productType, image, price, 
   console.log(image);
 
   return (
-    <Card sx={{ maxWidth: 400 , height: 600 , backgroundColor: "#09b588", color: "#ffffff" }} className="card">
+    <Card sx={{ maxWidth: 350 , backgroundColor: "#09b588", color: "#ffffff" }} className="card">
       <CardHeader
         action={
             <Typography
@@ -56,6 +72,7 @@ export default function Product({product: {id, name, productType, image, price, 
         image = {image}
         height = "330" 
         alt="Blusa blanca de algodón"
+        
       />
       {/* <input type="button"  id="anterior" value="<<"/>
       <input type="button"  id="siguiente" value=">>"/> */}
