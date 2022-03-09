@@ -2,6 +2,7 @@
   box-sizing: border-box;
   margin:0;
   padding: 0;
+  
 }
 
 body {
@@ -11,6 +12,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #FFABD9;
 }
 
 code {
@@ -22,24 +24,89 @@ code {
   display: flex;
   justify-content: space-between;
 }
+
+.home {
+  padding: 0.5rem 1rem;
+  transition: 1s
+}
+.home :hover{
+  color: #f20a95;
+}
+
+.productos :hover{
+  color: #f20a95;
+}
+
+.login {
+  padding: 0.6rem 1.1rem;
+}
+
+.login :hover{
+  color: #f20a95;
+}
+
+.cart {
+  padding: 0.6rem 1.1rem;
+}
+
+.cart :hover{
+  color: #f20a95;
+}
+
+.account {
+  padding: 0.6rem 1.1rem;
+}
+.account :hover{
+  color: #f20a95;
+}
+
+
 .left {
   display: flex;
-  flex-wrap: nowrap;
   align-items: center;
+  margin-left: 5rem;
 
 }
 .right {
-  flex-wrap: nowrap;
   align-items: center;
   display: flex;
   justify-content: flex-end;
+  margin-right: 5rem;
   
 }
 
 .fotosHome{
   display: flex;
-  flex-wrap: nowrap;
   margin-left: 5rem;
   margin-bottom: 5rem;
+
+}
+
+.contenedor{
+  display: flex;
+  margin-top: 4rem;
+  margin-left: 4rem;
+}
+
+.products{
+  display: flex;
+  justify-content: center;
+
+}
+
+h1 {
+  font-size: 3rem;
+  text-align: center;
+  color: white;
+  text-shadow: 0.1em 0.1em #45ffc7;
+
+}
+
+h2 {
+  margin-top: 2rem;
+  font-size: 3rem;
+  text-align: center;
+  color: #45ffc7;
+  text-shadow: 0.06em 0.06em #f20a95;
 
 }

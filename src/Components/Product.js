@@ -10,9 +10,10 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import blusa from '../images/blusa.png';
 import AddShoppingCart from '@mui/icons-material/AddShoppingCart';
 import accounting from 'accounting';
+import * as image from "./images/index.js";
+
 
 
 const ExpandMore = styled((props) => {
@@ -26,40 +27,45 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function Product() {
+export default function Product({product: {id, name, productType, image, price, description}}) {
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
+  console.log(image);
+
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 400 , height: 600 , backgroundColor: "#09b588", color: "#ffffff" }} className="card">
       <CardHeader
         action={
             <Typography
             className= 'images'
             variant = 'h5'
-            color = 'textSecondary'
+            color = "white"
             >
-             {accounting.formatMoney(22000, "$", "cop")}
+             {accounting.formatMoney(price, "$", "cop")}
             </Typography>
         }
-        title="Blusa blanca"
+        title= {name}
         subheader="En stock"
       />
       <CardMedia
         component="img"
-    image= {blusa}
+        image = {image}
+        height = "330" 
         alt="Blusa blanca de algodón"
       />
-      <CardContent>
+      {/* <input type="button"  id="anterior" value="<<"/>
+      <input type="button"  id="siguiente" value=">>"/> */}
+      <CardContent >
           <Typography variant = 'body2'>
-            Casual, fresca, femenina.
+            {productType}
           </Typography>
       </CardContent>
-      <CardActions disableSpacing>
-        <IconButton aria-label="Add to Cart">
+      <CardActions disableSpacing color = "white">
+        <IconButton aria-label="Add to Cart" >
           <AddShoppingCart fontSize='large' />
         </IconButton>
         <IconButton aria-label="share">
@@ -77,7 +83,7 @@ export default function Product() {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph>Descripción:</Typography>
-          <Typography paragraph>Disponible en tallas S, M, L y en color negro, blanco y rojo</Typography>
+          <Typography paragraph>{description}</Typography>
         </CardContent>
       </Collapse>
     </Card>
