@@ -25,6 +25,7 @@ const Total = () => {
     backgroundColor: "aqua",
     fontSize: "15px",
     fontWeight:"bold",
+    boxShadow: "10px 5px 5px #09b588",
     textShadow:  "0.2em 0.2em white"}}>Check Out</Button>
         </div>
 

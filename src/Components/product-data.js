@@ -74,7 +74,7 @@ const  products =[
     },
     {
         id:10,
-        name: "Vestido cuello bandeja",
+        name: "Vestido casual",
         productType: "Vestido",
         price: 50000,
         image:  "/static/media/cila23.4c76dde1ab9da905301f.png",

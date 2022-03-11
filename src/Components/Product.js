@@ -12,25 +12,8 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddShoppingCart from '@mui/icons-material/AddShoppingCart';
 import accounting from 'accounting';
-import { makeStyles } from "@mui/styles";
-import * as image from "./images/index.js";
-
-// const useStyles = makeStyles((theme) => ({
-
-//   root :{
-//     maxwidth: 345,
-//     backgroundColor: "#09b588",
-//     color: "#ffffff" 
-//   },
-//   action :{
-//     marrginTop: "1rem",
-//   },
-//   media: {
-//     height: 0,
-//     padingTop: "56.25%",
-//   }
-
-// }))
+import {actionTypes} from "../reducer";
+import { useStateValue } from '../StateProvider';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -45,12 +28,27 @@ const ExpandMore = styled((props) => {
 
 export default function Product({product: {id, name, productType, image, price, description}}) {
   const [expanded, setExpanded] = React.useState(false);
-
+  //cuando se estalle la linea de abajo cambiar basket por state
+  const [basket, dispatch] = useStateValue();
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-  console.log(image);
+  const addToBasket = () => {
+    dispatch({
+      type: actionTypes.ADD_TO_BASKET,
+      item:{
+        id,
+        name,
+        productType,
+        image, 
+        price,
+        description,
+      }
+
+    })
+  }
+  // console.log(image);
 
   return (
     <Card sx={{ maxWidth: 350 , backgroundColor: "#09b588", color: "#ffffff" }} className="card">
@@ -82,7 +80,7 @@ export default function Product({product: {id, name, productType, image, price, 
           </Typography>
       </CardContent>
       <CardActions disableSpacing color = "white">
-        <IconButton aria-label="Add to Cart" >
+        <IconButton aria-label= "Add to cart" onClick={addToBasket}>
           <AddShoppingCart fontSize='large' />
         </IconButton>
         <IconButton aria-label="share">

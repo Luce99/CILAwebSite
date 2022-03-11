@@ -3,16 +3,15 @@ import Grid from "@material-ui/core/Grid";
 import { Typography } from "@mui/material";
 import CheckoutCard from "./CheckoutCard";
 import Total from "./Total";
-import products from "../Components/product-data";
-import { ClassNames } from "@emotion/react";
+import {useStateValue} from "../StateProvider";
 
 const CheckoutPage = () => {
-  //     const [{basket}, dispatch] = useStateValue();
+     const [{basket}, dispatch] = useStateValue();
 
   function FormRow() {
     return (
       <React.Fragment>
-        {products.map((item) => (
+        {basket?.map((item) => (
           <Grid item xs={12} sm={8} md={6} lg={4}>
             <CheckoutCard key={item.id} product={item} />
           </Grid>

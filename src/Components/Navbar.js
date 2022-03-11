@@ -13,13 +13,16 @@ import { Container } from '@mui/material';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Tooltip from '@mui/material/Tooltip'
+import {Link} from 'react-router-dom'
+import {useStateValue} from "../StateProvider";
 
-const pages = ['Home', 'Productos'];
+const pages = [<Link className='link' to="/" style={{color: 'inherit', textDecoration: 'inherit', }} ><span>Home</span></Link>, <Link className='link' to="/tienda" style={{color: 'inherit', textDecoration: 'inherit'}}><span>Productos</span></Link>];
 const settings = ['Cuenta', 'Login'];
 
 export default function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [{basket}, dispatch] = useStateValue();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -41,6 +44,7 @@ export default function Navbar() {
       color: "white"}}>
          <Container maxWidth="xl">
         <Toolbar disableGutters className='menu'>
+        <Link to="/">
         <img 
             nowrap = "true"
             component="div"
@@ -51,6 +55,7 @@ export default function Navbar() {
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
           </img>
+          </Link>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
           <IconButton
               size="large"
@@ -83,7 +88,7 @@ export default function Navbar() {
               {pages.map((page) => (
                 <div className='home'>
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                   <Typography style={{ fontWeight:"bold", color: "#f20a95"}}>{page}</Typography>
+                   <Typography>{page}</Typography>
                 </MenuItem>
                 </div>
 
@@ -99,8 +104,7 @@ export default function Navbar() {
               
                 key={page}
                 onClick={handleCloseNavMenu}
-                color = "inherit"
-                style = {{fontSize: "20px", fontWeight:"bold" }}
+                style = {{fontSize: "20px", fontWeight:"bold", color: "#ffffff" }}
               >
                 {page}
               </Button>
@@ -109,13 +113,15 @@ export default function Navbar() {
              </div>
   
           </Box>
+          <Link to="carritoDeCompras">
           <div className='cart'>
           <IconButton color="inherit">
-          <Badge badgeContent={2} style={{color: "#f20a95"}}>
+          <Badge badgeContent={basket?.length} style={{color: "#ffffff"}}>
           <ShoppingCart fontSize='large' />
           </Badge>
           </IconButton>
           </div>
+          </Link>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
             <div  className='account'>
