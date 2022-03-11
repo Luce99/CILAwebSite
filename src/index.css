@@ -24,11 +24,8 @@ code {
   display: flex;
   justify-content: space-between;
 }
-
 .nav {
   padding: 0.5rem 1rem;
-  transition: 1s;
-  font-weight: bold;
 }
 .nav :hover{
   color: #f20a95;

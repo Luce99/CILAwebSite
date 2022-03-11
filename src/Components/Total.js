@@ -11,13 +11,6 @@ root:{
     alignItems: "center",
     height: "20vh",
     justifyContent: "space-between"
-},
-button: {
-    color: "black",
-    backgroundColor: "aqua",
-    fontSize: "15px",
-    fontWeight:"bold",
-    textShadow:  "0.2em 0.2em white",
 }
 }))
 
@@ -28,7 +21,11 @@ const Total = () => {
         <div className={classes.root}>
             <h5> Total items: 3</h5>
             <h5> {accounting.formatMoney(50000, "$", "cop")} </h5>
-            <Button variant="contained" className={classes.button}>Check Out</Button>
+            <Button variant="contained" style ={{color: "black",
+    backgroundColor: "aqua",
+    fontSize: "15px",
+    fontWeight:"bold",
+    textShadow:  "0.2em 0.2em white"}}>Check Out</Button>
         </div>
 
     )

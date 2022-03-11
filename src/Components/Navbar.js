@@ -92,17 +92,22 @@ export default function Navbar() {
             </Menu>
             </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <div className='nav'>
             {pages.map((page) => (
-              <div className='nav'>
+              
               <Button
+              
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block',fontSize: "25px", fontWeight:"bold" }}
+                color = "inherit"
+                style = {{fontSize: "20px", fontWeight:"bold" }}
               >
                 {page}
               </Button>
-              </div>
+             
             ))}
+             </div>
+  
           </Box>
           <div className='cart'>
           <IconButton color="inherit">

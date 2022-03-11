@@ -1,5 +1,4 @@
 import React from "react";
-import { makeStyles } from "@mui/styles";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from "@mui/material";
 import CheckoutCard from "./CheckoutCard";
@@ -7,15 +6,7 @@ import Total from "./Total";
 import products from "../Components/product-data";
 import { ClassNames } from "@emotion/react";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    padding: "2rem",
-  },
-}));
-
 const CheckoutPage = () => {
-  const classes = useStyles();
   //     const [{basket}, dispatch] = useStateValue();
 
   function FormRow() {
@@ -31,7 +22,7 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className={ClassNames.root}>
+    <div style={{flexGrow: 1, padding: "2rem"}}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography align="center" gutterBottom variant="h3">
