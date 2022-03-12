@@ -15,6 +15,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Tooltip from '@mui/material/Tooltip'
 import {Link} from 'react-router-dom'
 import {useStateValue} from "../StateProvider";
+import { getItemsTotal } from "../reducer";
 
 const pages = [<Link className='link' to="/" style={{color: 'inherit', textDecoration: 'inherit', }} ><span>Home</span></Link>, <Link className='link' to="/tienda" style={{color: 'inherit', textDecoration: 'inherit'}}><span>Productos</span></Link>];
 const settings = ['Cuenta', 'Login'];
@@ -22,7 +23,8 @@ const settings = ['Cuenta', 'Login'];
 export default function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [{basket}, dispatch] = useStateValue();
+  const [state, dispatch] = useStateValue();
+  const {basket} = state;
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -116,7 +118,7 @@ export default function Navbar() {
           <Link to="carritoDeCompras">
           <div className='cart'>
           <IconButton color="inherit">
-          <Badge badgeContent={basket?.length} style={{color: "#ffffff"}}>
+          <Badge badgeContent={getItemsTotal(basket)} style={{color: "#ffffff"}}>
           <ShoppingCart fontSize='large' />
           </Badge>
           </IconButton>

@@ -5,7 +5,6 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Product from './Product';
 import products from "./product-data";
-import * as image from "./images/index.js";
 
 
 const Item = styled(Paper)(({ theme }) => ({

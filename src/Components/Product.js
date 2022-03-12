@@ -26,10 +26,10 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function Product({product: {id, name, productType, image, price, description}}) {
+export default function Product({product: {id, name, productType, image, price, description, quantity}}) {
   const [expanded, setExpanded] = React.useState(false);
-  //cuando se estalle la linea de abajo cambiar basket por state
-  const [basket, dispatch] = useStateValue();
+  const [state, dispatch] = useStateValue();
+  const {basket} = state;
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -44,6 +44,7 @@ export default function Product({product: {id, name, productType, image, price, 
         image, 
         price,
         description,
+        quantity
       }
 
     })
