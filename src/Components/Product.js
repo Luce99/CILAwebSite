@@ -49,7 +49,7 @@ export default function Product({product: {id, name, productType, image, price, 
 
     })
   }
-  // console.log(image);
+   //console.log(image);
 
   return (
     <Card sx={{ maxWidth: 350 , backgroundColor: "#09b588", color: "#ffffff" }} className="card">
@@ -70,7 +70,7 @@ export default function Product({product: {id, name, productType, image, price, 
         component="img"
         image = {image}
         height = "330" 
-        alt="Blusa blanca de algodón"
+        alt={name}
         
       />
       {/* <input type="button"  id="anterior" value="<<"/>

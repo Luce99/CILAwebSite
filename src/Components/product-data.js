@@ -1,3 +1,5 @@
+import * as images from "./images/index";
+
 
 const  products =[
     {
@@ -14,7 +16,7 @@ const  products =[
         name: "Camiseta",
         productType: "Tops",
         price: 22000,
-        image:  '/static/media/cila3.5d42c0bb834020e2a660.png',
+        image: '/static/media/cila3.5d42c0bb834020e2a660.png',
         description: "Disponible en tallas S, M, L y en los colores blanco, rojo y negro",
         quantity:1
     },

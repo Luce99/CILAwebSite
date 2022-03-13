@@ -45,6 +45,10 @@ code {
   color: #f20a95;
 }
 
+.login :hover{
+  color: #f20a95;
+}
+
 .fotosHome{
   display: flex;
   margin-left: 5rem;
@@ -64,14 +68,20 @@ code {
 
 }
 
-h1 {
+h2 {
+  font-size: 3rem;
+  text-align: center;
+  color: black;
+
+}
+
+h3 {
   font-size: 3rem;
   text-align: center;
   color: white;
   text-shadow: 0.1em 0.1em #45ffc7;
 
 }
-
 
 h3 {
   font-size: 3rem;
@@ -82,10 +92,25 @@ h3 {
 }
 
 h4 {
+  display: flex;
   margin-top: 2rem;
   font-size: 3rem;
   text-align: center;
   color: #45ffc7;
   text-shadow: 0.06em 0.06em #f20a95;
+
+}
+
+h5 {
+  font-size: 3rem;
+  text-align: center;
+  color: white;
+  text-shadow: 0.1em 0.1em #45ffc7;
+
+}
+.bar {
+  display: flex;
+  justify-content: center;
+  background-color: #FFABD9;
 
 }
