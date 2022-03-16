@@ -29,11 +29,18 @@ const pages = [
   </Link>,
   <Link
     className="link"
-    to="/tienda"
+    to="/caoticas"
     style={{ color: "inherit", textDecoration: "inherit" }}
   >
-    <span>Productos</span>
+    <span>Caóticas</span>
   </Link>,
+  <Link
+  className="link"
+  to="/dulces"
+  style={{ color: "inherit", textDecoration: "inherit" }}
+>
+  <span>Dulces</span>
+</Link>,
 ];
 const settings = ["Cuenta"];
 

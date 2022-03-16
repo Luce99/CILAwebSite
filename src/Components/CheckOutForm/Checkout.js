@@ -58,7 +58,7 @@ export default function Checkout() {
 
   return (
     <ThemeProvider theme={theme}>
-      <AppBar
+      {/* <AppBar
         position="absolute"
         color="default"
         elevation={0}
@@ -72,7 +72,7 @@ export default function Checkout() {
             CILA  AUTÉNTICAS
           </Typography>
         </Toolbar>
-      </AppBar>
+      </AppBar> */}
       <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
         <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
           <Typography component="h2" variant="h4" align="center">

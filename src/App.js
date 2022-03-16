@@ -1,7 +1,9 @@
 import './App.css';
 import HomePage from './Components/HomePage';
 import Navbar from './Components/Navbar';
-import Products from './Components/Products';
+import Caoticas from './Components/Caoticas';
+import Dulces from './Components/Dulces';
+import Footer from './Components/Footer';
 import CheckoutPage from './Components/CheckoutPage';
 import {Routes, BrowserRouter as Router, Route} from 'react-router-dom';
 import { Fragment, useEffect } from 'react';
@@ -35,9 +37,11 @@ function App() {
         <Route exact path= "/signup" element={<SignUp/>}/>
         <Route exact path= "/carritoDeCompras" element={<CheckoutPage/>}/>
         <Route exact path="/checkout" element={<Checkout/>}/>
-        <Route exact path="/tienda" element={<Products/>}/>
+        <Route exact path="/caoticas" element={<Caoticas/>}/>
+        <Route exact path="/dulces" element={<Dulces/>}/>
         <Route exact path="/" element={<HomePage/>}/>
         </Routes>
+        <Footer/>
         </Fragment>
     </Router>
   );

@@ -6,7 +6,7 @@ import {useStateValue} from "../StateProvider";
 import {actionTypes} from "../reducer";
 import { getBasketTotal } from "../reducer";
 import { getItemsTotal } from "../reducer";
-
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme)=>({
 root:{
@@ -42,12 +42,12 @@ const clearCart = () => {dispatch({
     textShadow:  "0.2em 0.2em white"}}>Limpiar carrito</Button>
             <h5> Total items: {getItemsTotal(basket)}</h5>
             <h5> {accounting.formatMoney(getBasketTotal(basket), "$", "cop")} </h5>
-            <Button variant="contained" style ={{color: "black",
+            <Link to="/checkout" style={{ color: "inherit", textDecoration: "inherit" }}><Button variant="contained" style ={{color: "black",
     backgroundColor: "aqua",
     fontSize: "15px",
     fontWeight:"bold",
     boxShadow: "10px 5px 5px #09b588",
-    textShadow:  "0.2em 0.2em white"}}>Check Out</Button>
+    textShadow:  "0.2em 0.2em white"}}>Check Out</Button></Link>
         </div>
 
     );
