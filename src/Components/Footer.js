@@ -15,8 +15,6 @@ export default function Footer(){
           <Box
             px={{ xs: 3, sm: 10 }}
             py={{ xs: 5, sm: 10 }}
-            bgcolor="transparent"
-            color="#f20a95"
           >
             <Container maxWidth="lg">
               <Grid container spacing={5}>
@@ -32,7 +30,7 @@ export default function Footer(){
                     </Link>
                   </Box>
                   <Box>
-                    <Link href="/" color="inherit">
+                    <Link href="mailto:cila.autenticas@gmail.com"  target="_blank" color="inherit">
                         <Icon style={{marginTop: "2px"}}>
                       <EmailIcon/>
                       </Icon>

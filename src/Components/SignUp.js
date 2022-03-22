@@ -13,7 +13,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { auth } from "./firebase";
+import { gql, useMutation } from "@apollo/client";
 
 function Copyright(props) {
   return (
@@ -36,28 +36,66 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [correo, setCorreo] = useState("");
+  const [contrasena, setContrasena] = useState("");
+  const [Rol, setRol] = useState("");
   const history = useNavigate();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+  //crear usuario
+  const createUser = gql`
+    mutation Mutation(
+      $nombre: String!
+      $apellido: String!
+      $correo: String!
+      $contrasena: String!
+    ) {
+      createUser(
+        nombre: $nombre
+        apellido: $apellido
+        correo: $correo
+        contrasena: $contrasena
+      ) {
+        _id
+        nombre
+        apellido
+        correo
+        contrasena
+        direccion
+        Rol {
+          nombre
+        }
+      }
+    }
+  `;
+
+  const [CreateUser] = useMutation(createUser);
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+
+   var {data, error} = await CreateUser({
+      variables: { nombre, apellido,correo, contrasena, Rol},
     });
+    if (data){
+      console.log(data)
+      localStorage.setItem("isLogged", true);
+      localStorage.setItem("Rol", JSON.stringify(data.createUser.Rol));
+      localStorage.setItem("nombre", data.createUser.nombre + data.createUser.apellido);
+      localStorage.setItem("id", data.createUser._id);
+         history('/')
+        //  window.location.reload()
+    }
+    else {
+      console.log("Error al registrar")
+    }
+    setNombre("");
+    setApellido("");
+    setCorreo("");
+    setContrasena("");
+    setRol("");
   };
 
-  const signup =(e) => {
-      e.preventDefault();
-      auth.createUserWithEmailAndPassword(email, password).then((auth)=>{
-        console.log(auth);
-        if(auth){
-          history("/");
-        }
-      }).catch(err=>alert(err.message))
-  }
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -69,7 +107,7 @@ export default function SignUp() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "#f20a95" }} >
+          <Avatar sx={{ m: 1, bgcolor: "#f20a95" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h3" className="registro">
@@ -89,7 +127,9 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
+                  label="Nombre"
+                  value={nombre}
+                  onChange={(evt) => setNombre(evt.target.value)}
                   autoFocus
                 />
               </Grid>
@@ -98,34 +138,37 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="lastName"
-                  label="Last Name"
+                  label="Apellido"
                   name="lastName"
                   autoComplete="family-name"
+                value={apellido}
+                onChange={(evt) => setApellido(evt.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  value={email}
-                  onChange={e=>setEmail(e.target.value)}
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Dirección de correo"
                   name="email"
+                  type="email"
                   autoComplete="email"
+                  value={correo}
+                onChange={(evt) => setCorreo(evt.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  value={password}
-                  onChange={e=>setPassword(e.target.value)}
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="Contraseña"
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  value={contrasena}
+                  onChange={(evt) => setContrasena(evt.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -141,7 +184,6 @@ export default function SignUp() {
               </Grid>
             </Grid>
             <Button
-              onClick={signup}
               type="submit"
               fullWidth
               variant="contained"

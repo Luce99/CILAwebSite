@@ -1,13 +1,11 @@
 import * as React from "react";
-import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Product from "./Product";
 import products from "./product-data";
 
 function filtrarPorCategoria(product) {
-  if (product.category === "Dulces") {
+  if (product.category === "Encantadoras") {
     return true;
   } else {
     return false;
@@ -16,20 +14,12 @@ function filtrarPorCategoria(product) {
 
 const newProducts = products.filter(filtrarPorCategoria);
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
-
-export default function Dulces() {
+export default function Encantadoras() {
   return (
-    <div className="dulces">
+    <div className="encantadoras">
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <h1>DULCES</h1>
+          <h1>ENCANTADORAS</h1>
         </Grid>
       </Grid>
       <Box sx={{ flexGrow: 1 }} className="contenedor">

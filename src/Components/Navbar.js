@@ -16,9 +16,23 @@ import Tooltip from "@mui/material/Tooltip";
 import { Link } from "react-router-dom";
 import { useStateValue } from "../StateProvider";
 import { actionTypes, getItemsTotal } from "../reducer";
-import { auth } from "./firebase";
 import { useNavigate } from "react-router-dom";
 
+const rol = JSON.parse(localStorage.getItem("Rol"));
+
+function administracion(rol){
+  console.log(rol)
+  if (rol){
+  if (rol.nombre =="administrador"){
+     return [<Link to="/accountPage">Cuenta</Link>, "Administración"]
+    } 
+  else  { 
+    return [<Link to="/accountPage">Cuenta</Link>]
+  }
+} else {
+  return [<Link to="/signin">Cuenta</Link>]
+}
+}
 const pages = [
   <Link
     className="link"
@@ -36,24 +50,28 @@ const pages = [
   </Link>,
   <Link
   className="link"
-  to="/dulces"
+  to="/encantadoras"
   style={{ color: "inherit", textDecoration: "inherit" }}
 >
-  <span>Dulces</span>
+  <span>Encantadoras</span>
 </Link>,
 ];
-const settings = ["Cuenta"];
+const settings = administracion(rol);
 
 export default function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [state, dispatch] = useStateValue();
-  const { basket, user } = state;
+  const { basket } = state;
+  const isLogged = localStorage.getItem("isLogged");
   const history =useNavigate();
 
   const handleAuth = ()=>{
-    if (user){
-      auth.signOut();
+    if (isLogged){
+      localStorage.removeItem("isLogged");
+      localStorage.removeItem("Rol");
+      localStorage.removeItem("nombre");
+      localStorage.removeItem("id");
       dispatch({
         type: actionTypes.CLEAR_CART,
         basket: [],
@@ -159,7 +177,7 @@ export default function Navbar() {
             style={{ color: "inherit", textDecoration: "inherit" }}
           >
             <Button color="inherit" style={{fontSize:"20px"}} onClick={handleAuth}>
-            <strong>{user ?"Log out" : "Log in"}</strong>
+            <strong>{isLogged ?"Log out" : "Log in"}</strong>
             </Button>
           </Link>
           <Link to="carritoDeCompras">

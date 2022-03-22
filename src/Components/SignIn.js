@@ -12,8 +12,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import {useNavigate} from "react-router-dom";
-import { auth } from "./firebase";
-
+import { gql, isApolloError, useMutation, useQuery } from "@apollo/client";
 
 function Copyright(props) {
   return (
@@ -35,23 +34,79 @@ function Copyright(props) {
 
 
 export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [correo, setCorreo] = useState();
+  const [contrasena, setContrasena] = useState();
+  const [errors, setError] = useState();
   const history = useNavigate();
 
-  const signin = (e) => {
-    e.preventDefault();
-    auth.signInWithEmailAndPassword(email, password).then((auth)=>history("/")).catch(err=>alert(err.message))
-  }
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+  const login = gql`
+  mutation Mutation($correo: String!, $contrasena: String!) {
+    login(correo: $correo, contrasena: $contrasena) {
+      _id
+      nombre
+      apellido
+      correo
+      contrasena
+      direccion
+      Rol {
+        nombre
+      }
+      carrito {
+        _id
+      }
+    }
+  }
+  `;
+
+  const [dispatchLogin, {error}] = useMutation(login);
+  let errorMessage;
+    if (error){
+      if (
+        error.networkError && 
+        typeof window !== 'undefined' &&
+        !window.navigator.onLine
+      ){
+        errorMessage = "Parece que no tienes conexión a internet"; 
+      } else {
+          if (!errorMessage){
+            errorMessage = "Ocurrió un error, revisa los datos e intenta nuevamente."
+          }
+          }
+        }
+  const handleSubmit = async (e) => {
+    try {e.preventDefault();
+
+    let { data, error, loading } = await dispatchLogin({
+      variables: { correo, contrasena },
     });
+    if (data){
+      console.log(data)
+      localStorage.setItem("isLogged", true);
+      localStorage.setItem("Rol", JSON.stringify(data.login.Rol));
+      localStorage.setItem("nombre", data.login.nombre + data.login.apellido);
+      localStorage.setItem("id", data.login._id);
+      setCorreo("");
+      setContrasena("");   
+      history('/')  
+    }   
+
+  }catch(e) {
+    console.log({e})
+    if (isApolloError(e)){
+      for (const gqlError of e.graphQLErrors){
+        if (gqlError.extensions?.code=== "BAD_USER_INPUT"){
+          if (Array.isArray(gqlError.extensions?.errors)){
+              for (const fieldError of gqlError.extensions.errors){
+                setError( fieldError.message)
+              }
+          }
+        }
+      }
+    }
   };
+}
+ 
 
   return (
       <Container component="main" maxWidth="xs">
@@ -70,42 +125,43 @@ export default function SignIn() {
           <Typography component="h1" variant="h3">
             Ingresa
           </Typography>
+          {errorMessage && <p style={{color: "#ff0000"}}>{errorMessage}</p>}
           <Box
             component="form"
             onSubmit={handleSubmit}
             noValidate
             sx={{ mt: 1 }}
           >
+             {errors && <p>{errors}</p>}
             <TextField
-              value={email}
-              onChange={e=>setEmail(e.target.value)}
+              value={correo}
+              onChange={(evt) => setCorreo(evt.target.value)}
               margin="normal"
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Dirección de correo"
               name="email"
               autoComplete="email"
               autoFocus
             />
             <TextField
-              value={password}
-              onChange={e=>setPassword(e.target.value)}
+              value={contrasena}
+              onChange={(evt) => setContrasena(evt.target.value)}
               margin="normal"
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Contraseña"
               type="password"
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox value="remember" style={{color:"#f20a95"}} />}
               label="Remember me"
-            />
+            /> */}
             <Button
-              onClick={signin}
               type="submit"
               fullWidth
               variant="contained"
@@ -132,9 +188,8 @@ export default function SignIn() {
                 </Link>
               </Grid>
             </Grid>
-          </Box>
-        </Box>
+          </Box> 
+        </Box> 
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
-  );
-}
+  )}

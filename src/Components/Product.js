@@ -85,7 +85,9 @@ export default function Product({product: {id, name, productType, image, price, 
           <AddShoppingCart fontSize='large' />
         </IconButton>
         <IconButton aria-label="share">
+        <a className='share' href="https://api.whatsapp.com/send?text=www.mipagina.com" target="_blank">
           <ShareIcon />
+          </a>
         </IconButton>
         <ExpandMore
           expand={expanded}
