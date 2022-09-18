@@ -12,6 +12,8 @@ import Checkout from './Components/CheckOutForm/Checkout';
 import Encantadoras from './Components/Encantadoras';
 import { ApolloProvider } from '@apollo/client';
 import AccountPage from './Components/AccountPage';
+import NavAdministrador from './Components/Administration/NavAdministrador';
+import Users from './Components/Administration/Users';
 
 function App() {
 
@@ -28,6 +30,8 @@ function App() {
         <Route exact path="/caoticas" element={<Caoticas/>}/>
         <Route exact path="/encantadoras" element={<Encantadoras/>}/>
         <Route exact path="/accountPage" element={<AccountPage/>}/>
+        <Route exact path= "/admistracion" element={<NavAdministrador/>}/>
+        <Route exact path= "/users" element={<Users/>}/>
         <Route exact path="/" element={<HomePage/>}/>
         </Routes>
         <Footer/>

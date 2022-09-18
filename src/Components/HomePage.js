@@ -7,6 +7,8 @@ import { cila2 } from "../Components/images";
 import { Link } from "react-router-dom";
 import products from "./product-data";
 
+
+
 export default function HomePage() {
 
 // 	<Grid container spacing={2} className="products">
@@ -49,42 +51,6 @@ export default function HomePage() {
         visión.
       </p>
       </div>
-      {/* <h1>Más vendidos</h1> 
-	  Slideshow sin cambio automático 
-	  <Slideshow controles={true}>
-				<Slide>
-					<a href="/">
-						<img src={blusa} alt=""/>
-					</a>
-					<TextoSlide>
-						<p>15% descuento en productos Apple</p>
-					</TextoSlide>
-				</Slide>
-				<Slide>
-					<a href="/">
-						<img src={cila1} alt=""/>
-					</a>
-					<TextoSlide>
-						<p>15% descuento en productos Apple</p>
-					</TextoSlide>
-				</Slide>
-				<Slide>
-					<a href="/">
-						<img src={cila2} alt=""/>
-					</a>
-					<TextoSlide>
-						<p>15% descuento en productos Apple</p>
-					</TextoSlide>
-				</Slide>
-				<Slide>
-					<a href="/">
-						<img src={cila3} alt=""/>
-					</a>
-					<TextoSlide>
-						<p>15% descuento en productos Apple</p>
-					</TextoSlide>
-				</Slide>
-			</Slideshow> */}
       <h1>Más vendidos</h1>
       <Slideshow
         controles={true}

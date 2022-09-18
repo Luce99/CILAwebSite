@@ -18,13 +18,14 @@ import { useStateValue } from "../StateProvider";
 import { actionTypes, getItemsTotal } from "../reducer";
 import { useNavigate } from "react-router-dom";
 
-const rol = JSON.parse(localStorage.getItem("Rol"));
+const rol = localStorage.getItem("Rol");
+const isLogged = localStorage.getItem("isLogged");
 
-function administracion(rol){
-  console.log(rol)
-  if (rol){
-  if (rol.nombre =="administrador"){
-     return [<Link to="/accountPage">Cuenta</Link>, "Administración"]
+function administracion(rolType){
+  if (isLogged){
+    rolType = rol.toString()
+  if (rolType.includes("administrador")){
+     return [<Link to="/accountPage">Cuenta</Link>, <Link to="/admistracion">Administración</Link>]
     } 
   else  { 
     return [<Link to="/accountPage">Cuenta</Link>]

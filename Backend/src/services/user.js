@@ -50,18 +50,12 @@ getUserById = async (userId) => {
 };
 
 login = async ({ correo, contrasena }) => {
-
-  // if (!correo, contrasena){
-  //   errors.push({property: "data", message: "Por favor ingrese los datos completos"})
-  // }
   let user = await User.findOne({ correo: correo }).populate({
     path: "Rol",
     model: "Rol",
   }).populate({
     path: "carrito",
     model: "producto",});
-    let property;
-    let message;
    const errors = [];
   if (!correo){
     errors.push({property: "data", message: "Por favor ingrese los datos completos"})
