@@ -1,11 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const { ApolloServer } = require("apollo-server-express");
-const { resolvers } = require("./resolvers");
-const { types } = require("./types");
+const { resolvers } = require("./src/resolvers");
+const { types } = require("./src/types");
 const cors = require("cors");
 
 const app = express();
+const PORT = process.env.PORT || 5010;
 app.use(cors());
 app.use(express.json());
 
@@ -14,7 +15,7 @@ const server = new ApolloServer({
   resolvers: resolvers,
 });
 
-const Rol = require("./models/Rol");
+const Rol = require("./src/models/Rol");
 
 function initial() {
   Rol.estimatedDocumentCount((err, count) => {
@@ -45,10 +46,10 @@ mongoose.connect(
   async () => {
     initial();
 
-    app.listen(5010, async () => {
+    app.listen(PORT, async () => {
       await server.start();
       server.applyMiddleware({ app });
-      console.log("servidor inicializado en puerto 5010");
+      console.log(`server started on port ${PORT}`);
     });
   }
 );
