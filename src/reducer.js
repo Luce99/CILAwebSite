@@ -14,7 +14,7 @@ export const getBasketTotal = (basket) =>
 
 export const getItemsTotal = (basket)=>{
     let total = 0;
-    if (basket.length !=0){
+    if (basket.length !==0){
    for (var i=0; i<basket.length;i++){
        let item = basket[i];
        total += item.quantity;
