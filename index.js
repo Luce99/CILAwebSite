@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import {StateProvider} from "./StateProvider"
-import reducer, {initialState} from "./reducer"
+import App from './src/App';
+import reportWebVitals from './src/reportWebVitals';
+import {StateProvider} from "./src/StateProvider"
+import reducer, {initialState} from "./src/reducer"
 import {ApolloClient, ApolloProvider, InMemoryCache, HttpLink} from '@apollo/client'
 
 const client = new ApolloClient({
