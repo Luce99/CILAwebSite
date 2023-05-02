@@ -2,6 +2,7 @@
   "name": "cila-ecommerce",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@apollo/client": "^3.5.10",
     "@emotion/react": "^11.8.1",
