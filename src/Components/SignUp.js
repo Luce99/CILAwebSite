@@ -277,7 +277,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="email"
-                  label="Direccion de correo"
+                  label="Dirección de correo"
                   name="email"
                   type="email"
                   autoComplete="email"
@@ -291,7 +291,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   name="password"
-                  label="Contrasena"
+                  label="Contraseña"
                   type="password"
                   id="password"
                   autoComplete="new-password"

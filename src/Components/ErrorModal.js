@@ -23,8 +23,8 @@ const SEVERITY_ICONS = {
 
 const DEFAULT_TITLES = {
   error: "Ha ocurrido un error",
-  warning: "Atencion",
-  info: "Informacion",
+  warning: "Atención",
+  info: "Información",
 };
 
 const DEFAULT_SEVERITY = "error";
@@ -187,7 +187,7 @@ function ErrorModal({
     return (
       <Box sx={STYLES.codeBox}>
         <Typography sx={STYLES.codeText}>
-          Codigo: {visibleCode}
+          Código: {visibleCode}
         </Typography>
       </Box>
     );

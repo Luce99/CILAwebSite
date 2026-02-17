@@ -34,7 +34,7 @@ function useErrorModal() {
     const errorCode = errorEntry?.code || "UNKNOWN_ERROR";
     const displayCode = overrides.displayCode || errorEntry?.displayCode || null;
     const severity = overrides.severity || errorEntry?.severity || "error";
-    const message = overrides.message || errorEntry?.userMessage || "Ocurrio un error inesperado.";
+    const message = overrides.message || errorEntry?.userMessage || "Ocurrió un error inesperado.";
     const title = overrides.title || null;
     const detail = overrides.detail || errorEntry?.detail || null;
 

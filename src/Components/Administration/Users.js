@@ -98,7 +98,7 @@ const DeleteUser = async (id) =>{
                 <th>Nombre</th>
                 <th>Apellido</th>
                 <th>Correo</th>
-                <th>Direccion</th>
+                <th>Dirección</th>
                 <th>Editar</th>
               </tr>
             </thead>
