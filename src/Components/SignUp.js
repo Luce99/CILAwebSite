@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -10,10 +10,46 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import CircularProgress from "@mui/material/CircularProgress";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
+
+import ErrorModal from "./ErrorModal";
+import useErrorModal from "../hooks/useErrorModal";
+import {
+  ERROR_CODES,
+  validateSignUpFields,
+  resolveErrorFromException,
+} from "../constants/errorCodes";
+
+const theme = createTheme();
+
+const CREATE_USER_MUTATION = gql`
+  mutation Mutation(
+    $nombre: String!
+    $apellido: String!
+    $correo: String!
+    $contrasena: String!
+  ) {
+    createUser(
+      nombre: $nombre
+      apellido: $apellido
+      correo: $correo
+      contrasena: $contrasena
+    ) {
+      _id
+      nombre
+      apellido
+      correo
+      contrasena
+      direccion
+      Rol {
+        nombre
+      }
+    }
+  }
+`;
 
 function Copyright(props) {
   return (
@@ -33,68 +69,75 @@ function Copyright(props) {
   );
 }
 
-const theme = createTheme();
-
 export default function SignUp() {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [correo, setCorreo] = useState("");
   const [contrasena, setContrasena] = useState("");
-  const [Rol, setRol] = useState("");
-  const history = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  //crear usuario
-  const createUser = gql`
-    mutation Mutation(
-      $nombre: String!
-      $apellido: String!
-      $correo: String!
-      $contrasena: String!
-    ) {
-      createUser(
-        nombre: $nombre
-        apellido: $apellido
-        correo: $correo
-        contrasena: $contrasena
-      ) {
-        _id
-        nombre
-        apellido
-        correo
-        contrasena
-        direccion
-        Rol {
-          nombre
-        }
-      }
-    }
-  `;
+  const navigate = useNavigate();
+  const { modalState, showError, closeError } = useErrorModal();
 
-  const [CreateUser] = useMutation(createUser);
-  const handleSubmit = async(e) => {
-    e.preventDefault();
+  const [executeCreateUser] = useMutation(CREATE_USER_MUTATION);
 
-   var {data, error} = await CreateUser({
-      variables: { nombre, apellido,correo, contrasena, Rol},
-    });
-    if (data){
-      console.log(data)
-      localStorage.setItem("isLogged", true);
-      localStorage.setItem("Rol", JSON.stringify(data.createUser.Rol));
-      localStorage.setItem("nombre", data.createUser.nombre + data.createUser.apellido);
-      localStorage.setItem("id", data.createUser._id);
-         history('/')
-        //  window.location.reload()
-    }
-    else {
-      console.log("Error al registrar")
-    }
+  function resetForm() {
     setNombre("");
     setApellido("");
     setCorreo("");
     setContrasena("");
-    setRol("");
-  };
+  }
+
+  function handleSuccessfulRegistration(userData) {
+    localStorage.setItem("isLogged", true);
+    localStorage.setItem("Rol", JSON.stringify(userData.Rol));
+    localStorage.setItem("nombre", userData.nombre + userData.apellido);
+    localStorage.setItem("id", userData._id);
+    resetForm();
+    navigate("/");
+  }
+
+  function processGraphQLResponse(data) {
+    const createdUser = data?.createUser;
+
+    if (!createdUser) {
+      showError(ERROR_CODES.SIGNUP_NULL_RESPONSE);
+      return;
+    }
+
+    handleSuccessfulRegistration(createdUser);
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    const validationError = validateSignUpFields(nombre, apellido, correo, contrasena);
+    if (validationError) {
+      showError(validationError);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { data, errors } = await executeCreateUser({
+        variables: { nombre, apellido, correo, contrasena },
+      });
+
+      if (errors && errors.length > 0) {
+        const resolvedError = resolveErrorFromException({ graphQLErrors: errors });
+        showError(resolvedError);
+        return;
+      }
+
+      processGraphQLResponse(data);
+    } catch (exception) {
+      const resolvedError = resolveErrorFromException(exception);
+      showError(resolvedError);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -131,6 +174,7 @@ export default function SignUp() {
                   value={nombre}
                   onChange={(evt) => setNombre(evt.target.value)}
                   autoFocus
+                  disabled={isSubmitting}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -141,8 +185,9 @@ export default function SignUp() {
                   label="Apellido"
                   name="lastName"
                   autoComplete="family-name"
-                value={apellido}
-                onChange={(evt) => setApellido(evt.target.value)}
+                  value={apellido}
+                  onChange={(evt) => setApellido(evt.target.value)}
+                  disabled={isSubmitting}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -150,12 +195,13 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="email"
-                  label="Dirección de correo"
+                  label="Direccion de correo"
                   name="email"
                   type="email"
                   autoComplete="email"
                   value={correo}
-                onChange={(evt) => setCorreo(evt.target.value)}
+                  onChange={(evt) => setCorreo(evt.target.value)}
+                  disabled={isSubmitting}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -163,12 +209,13 @@ export default function SignUp() {
                   required
                   fullWidth
                   name="password"
-                  label="Contraseña"
+                  label="Contrasena"
                   type="password"
                   id="password"
                   autoComplete="new-password"
                   value={contrasena}
                   onChange={(evt) => setContrasena(evt.target.value)}
+                  disabled={isSubmitting}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -179,7 +226,7 @@ export default function SignUp() {
                       style={{ color: "#f20a95" }}
                     />
                   }
-                  label="Quiero recibir promociones y actualizaciones vía correo electrónico."
+                  label="Quiero recibir promociones y actualizaciones via correo electronico."
                 />
               </Grid>
             </Grid>
@@ -187,16 +234,17 @@ export default function SignUp() {
               type="submit"
               fullWidth
               variant="contained"
+              disabled={isSubmitting}
               sx={{ mt: 3, mb: 2 }}
               style={{
                 color: "black",
-                backgroundColor: "aqua",
+                backgroundColor: isSubmitting ? "#b2dfdb" : "aqua",
                 fontSize: "15px",
                 fontWeight: "bold",
                 boxShadow: "10px 5px 5px #09b588",
               }}
             >
-              Registrate
+              {isSubmitting ? <CircularProgress size={24} color="inherit" /> : "Registrate"}
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
@@ -208,6 +256,18 @@ export default function SignUp() {
           </Box>
         </Box>
         <Copyright sx={{ mt: 5 }} />
+
+        <ErrorModal
+          {...modalState}
+          onClose={closeError}
+          secondaryAction={{
+            label: "Reintentar",
+            onClick: () => {
+              closeError();
+              handleSubmit(new Event("submit"));
+            },
+          }}
+        />
       </Container>
     </ThemeProvider>
   );
