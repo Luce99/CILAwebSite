@@ -40,13 +40,13 @@ export default function HomePage() {
 		<p className="descripcion">
         CILA auténticas es un distribuidor de ropa para chicas, nos dividimos en
         dos categorías que nos gusta llamar para chicas &nbsp;
-        <a  href="/caoticas">
+        <Link to="/caoticas">
            caóticas &nbsp;
-        </a>
+        </Link>
         y para chicas &nbsp;
-        <a href="/encantadoras">
+        <Link to="/encantadoras">
            encantadoras, &nbsp;
-        </a>
+        </Link>
          somos una marca creada y administrada por mujeres jóvenes con mucha
         visión.
       </p>

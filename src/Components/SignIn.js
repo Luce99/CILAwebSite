@@ -11,7 +11,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link as RouterLink} from "react-router-dom";
 import { gql, isApolloError, useMutation, useQuery } from "@apollo/client";
 
 function Copyright(props) {
@@ -183,7 +183,7 @@ export default function SignIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/signup" variant="body2" color="inherit" >
+                <Link component={RouterLink} to="/signup" variant="body2" color="inherit" >
                   {"¿No tienes una cuenta? Registrate"}
                 </Link>
               </Grid>
