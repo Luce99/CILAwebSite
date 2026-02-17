@@ -167,7 +167,50 @@ export const AVATAR_GALLERY = [
 
 export const AVATAR_CATEGORIES = Object.values(CATEGORIES);
 
-export const DEFAULT_AVATAR_ID = "fem-1";
+export const DEFAULT_AVATAR_ID = "neu-1";
+
+/**
+ * Opciones de genero para el formulario de registro.
+ */
+export const GENDER_OPTIONS = [
+  { value: "femenino", label: "Femenino" },
+  { value: "masculino", label: "Masculino" },
+  { value: "no_especificado", label: "Prefiero no decirlo" },
+];
+
+export const DEFAULT_GENDER = "no_especificado";
+
+/**
+ * Mapea genero a la categoria de avatar correspondiente.
+ */
+const GENDER_TO_CATEGORY = {
+  femenino: CATEGORIES.FEMININE,
+  masculino: CATEGORIES.MASCULINE,
+  no_especificado: CATEGORIES.NEUTRAL,
+};
+
+/**
+ * Mapea genero al avatar por defecto correspondiente.
+ */
+const GENDER_DEFAULT_AVATARS = {
+  femenino: "fem-1",
+  masculino: "masc-1",
+  no_especificado: "neu-1",
+};
+
+/**
+ * Retorna el ID del avatar por defecto segun el genero.
+ */
+export function getDefaultAvatarByGender(gender) {
+  return GENDER_DEFAULT_AVATARS[gender] || GENDER_DEFAULT_AVATARS.no_especificado;
+}
+
+/**
+ * Retorna la categoria de avatar segun el genero.
+ */
+export function getCategoryByGender(gender) {
+  return GENDER_TO_CATEGORY[gender] || CATEGORIES.NEUTRAL;
+}
 
 /**
  * Busca un avatar por su ID. Retorna el avatar o el default.

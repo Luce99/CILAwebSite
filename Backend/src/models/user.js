@@ -28,10 +28,16 @@ const UserSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Rol" },
     
+    genero: {
+        type: String,
+        required: false,
+        enum: ["femenino", "masculino", "no_especificado"],
+        default: "no_especificado"
+    },
     avatar: {
         type: String,
         required: false,
-        default: "fem-1"
+        default: "neu-1"
     },
     carrito: [{
         type: Schema.Types.ObjectId,

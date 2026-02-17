@@ -96,9 +96,11 @@ function ErrorModal({
   open = false,
   onClose,
   errorCode = null,
+  displayCode = null,
   severity = DEFAULT_SEVERITY,
   title = null,
   message = "",
+  detail = null,
   showCode = true,
   primaryAction = null,
   secondaryAction = null,
@@ -125,15 +127,33 @@ function ErrorModal({
     );
   }
 
+  function renderDetail() {
+    if (!detail) {
+      return null;
+    }
+
+    return (
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ mt: 1, fontStyle: "italic", fontSize: "0.85rem" }}
+      >
+        {detail}
+      </Typography>
+    );
+  }
+
   function renderErrorCode() {
-    if (!showCode || !errorCode) {
+    const visibleCode = displayCode || errorCode;
+
+    if (!showCode || !visibleCode) {
       return null;
     }
 
     return (
       <Box sx={STYLES.codeBox}>
         <Typography sx={STYLES.codeText}>
-          Codigo: {errorCode}
+          Codigo: {visibleCode}
         </Typography>
       </Box>
     );
@@ -197,6 +217,7 @@ function ErrorModal({
         <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.6 }}>
           {message}
         </Typography>
+        {renderDetail()}
         {renderErrorCode()}
       </DialogContent>
 

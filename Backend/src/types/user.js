@@ -11,6 +11,7 @@ type User{
     correo: String!
     contrasena: String!
     direccion: String!
+    genero: String
     avatar: String
     Rol: Rol!
     carrito: [Producto]
@@ -42,6 +43,7 @@ type Mutation {
         correo: String!
         contrasena: String!
         direccion: String
+        genero: String
         avatar: String
         Rol: ID
         ): User
@@ -57,6 +59,7 @@ type Mutation {
         correo: String
         contrasena: String
         direccion: String
+        genero: String
         avatar: String
         Rol: ID
         ): User

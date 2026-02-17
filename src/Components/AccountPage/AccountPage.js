@@ -14,6 +14,7 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 
+import { useNavigate } from "react-router-dom";
 import ErrorModal from "../ErrorModal";
 import useErrorModal from "../../hooks/useErrorModal";
 import { ERROR_CODES, resolveErrorFromException } from "../../constants/errorCodes";
@@ -29,6 +30,7 @@ const GET_USER_BY_ID = gql`
       correo
       contrasena
       direccion
+      genero
       avatar
       Rol {
         nombre
@@ -146,7 +148,9 @@ export default function AccountPage() {
   const [contrasena, setContrasena] = useState("");
 
   const { modalState, showError, closeError } = useErrorModal();
+  const navigate = useNavigate();
   const id = localStorage.getItem("id");
+  const isLogged = localStorage.getItem("isLogged");
 
   const { data, error, loading, refetch } = useQuery(GET_USER_BY_ID, {
     variables: { id },
@@ -213,7 +217,44 @@ export default function AccountPage() {
     );
   }
 
+  function handleForceRelogin() {
+    localStorage.removeItem("isLogged");
+    localStorage.removeItem("Rol");
+    localStorage.removeItem("nombre");
+    localStorage.removeItem("id");
+    localStorage.removeItem("genero");
+    localStorage.removeItem("avatar");
+    navigate("/signin");
+  }
+
   function renderNoSession() {
+    const hasLoginFlag = Boolean(isLogged);
+    const hasMissingId = !id;
+
+    if (hasLoginFlag && hasMissingId) {
+      return (
+        <Box sx={STYLES.errorContainer}>
+          <Typography variant="h6" color="text.secondary">
+            Sesion incompleta
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ textAlign: "center", maxWidth: 400 }}>
+            Tu sesion no tiene toda la informacion necesaria. Esto puede pasar si hubo un error durante el registro. Por favor, inicia sesion de nuevo.
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={handleForceRelogin}
+            sx={{
+              mt: 2,
+              backgroundColor: "#f20a95",
+              "&:hover": { backgroundColor: "#d1087e" },
+            }}
+          >
+            Ir a iniciar sesion
+          </Button>
+        </Box>
+      );
+    }
+
     return (
       <Box sx={STYLES.errorContainer}>
         <Typography variant="h6" color="text.secondary">
@@ -222,6 +263,13 @@ export default function AccountPage() {
         <Typography variant="body1" color="text.secondary">
           Por favor, inicia sesion para ver tu cuenta.
         </Typography>
+        <Button
+          variant="outlined"
+          onClick={() => navigate("/signin")}
+          sx={{ mt: 2, color: "#f20a95", borderColor: "#f20a95" }}
+        >
+          Iniciar sesion
+        </Button>
       </Box>
     );
   }
@@ -317,7 +365,7 @@ export default function AccountPage() {
   }
 
   function renderContent() {
-    if (!id) {
+    if (!id || !isLogged) {
       return renderNoSession();
     }
 

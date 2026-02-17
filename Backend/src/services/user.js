@@ -3,6 +3,16 @@ const bcrypt = require("bcryptjs");
 const rondasDeSal = 10;
 const { UserInputError } = require ('apollo-server-errors');
 
+const DEFAULT_AVATARS = {
+  femenino: "fem-1",
+  masculino: "masc-1",
+  no_especificado: "neu-1",
+};
+
+function resolveDefaultAvatar(genero) {
+  return DEFAULT_AVATARS[genero] || DEFAULT_AVATARS.no_especificado;
+}
+
 createUser = async (args) => {
   try {
     const existingUser = await User.findOne({ correo: args.correo });
@@ -10,13 +20,16 @@ createUser = async (args) => {
       throw new Error("El usuario ya existe");
     }
     const hashedPassword = await bcrypt.hash(args.contrasena, rondasDeSal);
+    const genero = args.genero || "no_especificado";
+    const defaultAvatar = resolveDefaultAvatar(genero);
     let userInstance = new User({
       nombre: args.nombre,
       apellido: args.apellido,
       correo: args.correo,
       contrasena: hashedPassword,
       direccion: "",
-      avatar: args.avatar || "fem-1",
+      genero: genero,
+      avatar: args.avatar || defaultAvatar,
       Rol: "6233db911b318e2e210cc8f0",
     });
     const userSaved = await userInstance.save();

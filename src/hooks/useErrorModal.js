@@ -3,9 +3,11 @@ import { useState, useCallback } from "react";
 const INITIAL_STATE = {
   open: false,
   errorCode: null,
+  displayCode: null,
   severity: "error",
   title: null,
   message: "",
+  detail: null,
 };
 
 /**
@@ -30,18 +32,22 @@ function useErrorModal() {
    */
   const showError = useCallback((errorEntry, overrides = {}) => {
     const errorCode = errorEntry?.code || "UNKNOWN_ERROR";
+    const displayCode = overrides.displayCode || errorEntry?.displayCode || null;
     const severity = overrides.severity || errorEntry?.severity || "error";
     const message = overrides.message || errorEntry?.userMessage || "Ocurrio un error inesperado.";
     const title = overrides.title || null;
+    const detail = overrides.detail || errorEntry?.detail || null;
 
-    console.error(`[${errorCode}] ${errorEntry?.logMessage || message}`);
+    console.error(`[${errorCode}] ${errorEntry?.logMessage || message}`, detail ? `| Detalle: ${detail}` : "");
 
     setModalState({
       open: true,
       errorCode,
+      displayCode,
       severity,
       title,
       message,
+      detail,
     });
   }, []);
 
