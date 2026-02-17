@@ -1,15 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App.js";
-import { StateProvider } from "./StateProvider.js";
-import reportWebVitals from "./reportWebVitals.js";
+import App from "./App";
+import { StateProvider } from "./StateProvider";
+import ErrorBoundary from "./Components/ErrorBoundary";
+import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
-    <StateProvider>
-      <App />
-    </StateProvider>
+    <ErrorBoundary>
+      <StateProvider>
+        <App />
+      </StateProvider>
+    </ErrorBoundary>
   </React.StrictMode>,
   document.getElementById("root")
 );

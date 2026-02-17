@@ -19,28 +19,62 @@ import PaymentResult from './Components/PaymentResult';
 
 const ROUTER_BASENAME = process.env.PUBLIC_URL || "";
 
+function AppRoutes() {
+  return (
+    <Router basename={ROUTER_BASENAME}>
+      <Fragment>
+        <Navbar />
+        <Routes>
+          <Route exact path="/signin" element={<SignIn />} />
+          <Route exact path="/signup" element={<SignUp />} />
+          <Route exact path="/carritoDeCompras" element={<CheckoutPage />} />
+          <Route exact path="/checkout" element={<Checkout />} />
+          <Route exact path="/payment/result" element={<PaymentResult />} />
+          <Route exact path="/caoticas" element={<Caoticas />} />
+          <Route exact path="/encantadoras" element={<Encantadoras />} />
+          <Route exact path="/accountPage" element={<AccountPage />} />
+          <Route exact path="/admistracion" element={<NavAdministrador />} />
+          <Route exact path="/users" element={<Users />} />
+          <Route exact path="/" element={<HomePage />} />
+        </Routes>
+        <Footer />
+      </Fragment>
+    </Router>
+  );
+}
+
+function ApolloClientWarning() {
+  return (
+    <div style={{ padding: "2rem", textAlign: "center" }}>
+      <h2>Error de conexion</h2>
+      <p>
+        No se pudo inicializar la conexion con el servidor.
+        Por favor, recarga la pagina o intenta mas tarde.
+      </p>
+      <button
+        onClick={() => window.location.reload()}
+        style={{
+          padding: "0.5rem 1.5rem",
+          fontSize: "1rem",
+          cursor: "pointer",
+          marginTop: "1rem",
+        }}
+      >
+        Recargar
+      </button>
+    </div>
+  );
+}
+
 function App() {
+  if (!apolloClient) {
+    console.error("Apollo Client no se inicializo correctamente.");
+    return <ApolloClientWarning />;
+  }
+
   return (
     <ApolloProvider client={apolloClient}>
-      <Router basename={ROUTER_BASENAME}>
-        <Fragment>
-          <Navbar />
-          <Routes>
-            <Route exact path="/signin" element={<SignIn />} />
-            <Route exact path="/signup" element={<SignUp />} />
-            <Route exact path="/carritoDeCompras" element={<CheckoutPage />} />
-            <Route exact path="/checkout" element={<Checkout />} />
-            <Route exact path="/payment/result" element={<PaymentResult />} />
-            <Route exact path="/caoticas" element={<Caoticas />} />
-            <Route exact path="/encantadoras" element={<Encantadoras />} />
-            <Route exact path="/accountPage" element={<AccountPage />} />
-            <Route exact path="/admistracion" element={<NavAdministrador />} />
-            <Route exact path="/users" element={<Users />} />
-            <Route exact path="/" element={<HomePage />} />
-          </Routes>
-          <Footer />
-        </Fragment>
-      </Router>
+      <AppRoutes />
     </ApolloProvider>
   );
 }

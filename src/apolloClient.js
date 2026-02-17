@@ -1,15 +1,35 @@
-import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5010";
 const GRAPHQL_URI = `${API_BASE_URL}/graphql`;
 
-const httpLink = new HttpLink({
-  uri: GRAPHQL_URI,
-});
+function createApolloClient() {
+  try {
+    const client = new ApolloClient({
+      uri: GRAPHQL_URI,
+      cache: new InMemoryCache(),
+      defaultOptions: {
+        watchQuery: {
+          fetchPolicy: "cache-and-network",
+          errorPolicy: "all",
+        },
+        query: {
+          fetchPolicy: "network-only",
+          errorPolicy: "all",
+        },
+        mutate: {
+          errorPolicy: "all",
+        },
+      },
+    });
 
-const client = new ApolloClient({
-  link: httpLink,
-  cache: new InMemoryCache(),
-});
+    return client;
+  } catch (error) {
+    console.error("Error al crear el cliente Apollo:", error);
+    return null;
+  }
+}
 
-export default client;
+const apolloClient = createApolloClient();
+
+export default apolloClient;
