@@ -16,6 +16,7 @@ createUser = async (args) => {
       correo: args.correo,
       contrasena: hashedPassword,
       direccion: "",
+      avatar: args.avatar || "fem-1",
       Rol: "6233db911b318e2e210cc8f0",
     });
     const userSaved = await userInstance.save();

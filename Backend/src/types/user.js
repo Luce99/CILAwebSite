@@ -11,6 +11,7 @@ type User{
     correo: String!
     contrasena: String!
     direccion: String!
+    avatar: String
     Rol: Rol!
     carrito: [Producto]
 }
@@ -41,6 +42,7 @@ type Mutation {
         correo: String!
         contrasena: String!
         direccion: String
+        avatar: String
         Rol: ID
         ): User
 
@@ -55,6 +57,7 @@ type Mutation {
         correo: String
         contrasena: String
         direccion: String
+        avatar: String
         Rol: ID
         ): User
     deleteUser(
@@ -64,6 +67,7 @@ type Mutation {
         correo: String
         contrasena: String
         direccion: String
+        avatar: String
         Rol: ID
         ): User
 }

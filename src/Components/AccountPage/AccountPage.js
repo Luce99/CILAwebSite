@@ -3,7 +3,7 @@ import DeleteModal from "./components/DeleteModal";
 import ChangePasswordModal from "./components/ChangePasswordModal";
 import useModal from "../hooks/useModal";
 import EditModal from "./components/EditModal";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import CardContent from "@mui/material/CardContent";
@@ -11,10 +11,14 @@ import CardActions from "@mui/material/CardActions";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
 
 import ErrorModal from "../ErrorModal";
 import useErrorModal from "../../hooks/useErrorModal";
 import { ERROR_CODES, resolveErrorFromException } from "../../constants/errorCodes";
+import AvatarSelector from "../AvatarSelector";
+import { getAvatarById, DEFAULT_AVATAR_ID } from "../../constants/avatarGallery";
 
 const GET_USER_BY_ID = gql`
   query GetUserById($id: String!) {
@@ -25,6 +29,7 @@ const GET_USER_BY_ID = gql`
       correo
       contrasena
       direccion
+      avatar
       Rol {
         nombre
       }
@@ -32,17 +37,45 @@ const GET_USER_BY_ID = gql`
   }
 `;
 
-const AVATAR_URL = "https://www.sanboni.edu.co/onu/wp-content/uploads/avatar-mujer.png";
+const UPDATE_USER_AVATAR = gql`
+  mutation UpdateUser($id: ID!, $avatar: String) {
+    updateUser(_id: $id, avatar: $avatar) {
+      _id
+      avatar
+    }
+  }
+`;
 
 const STYLES = {
+  avatarContainer: {
+    position: "relative",
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "1rem",
+    marginBottom: "0.5rem",
+  },
+  avatarWrapper: {
+    position: "relative",
+    width: "200px",
+    height: "200px",
+  },
   avatar: {
     width: "200px",
     height: "200px",
     borderRadius: "50%",
-    display: "flex",
-    marginLeft: "auto",
-    marginRight: "auto",
     objectFit: "cover",
+    border: "4px solid #f20a95",
+    backgroundColor: "#f5f5f5",
+  },
+  editAvatarButton: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
+    backgroundColor: "#f20a95",
+    color: "white",
+    width: 36,
+    height: 36,
+    "&:hover": { backgroundColor: "#d1087e" },
   },
   card: {
     maxWidth: 370,
@@ -54,7 +87,7 @@ const STYLES = {
     marginRight: "auto",
     flexDirection: "column",
     marginBottom: "3rem",
-    marginTop: "2rem",
+    marginTop: "1rem",
   },
   loadingContainer: {
     display: "flex",
@@ -82,6 +115,14 @@ const STYLES = {
     fontWeight: "bold",
     boxShadow: "2.5px 2.5px #474444",
   },
+  avatarLabel: {
+    textAlign: "center",
+    color: "#f20a95",
+    fontWeight: 500,
+    fontSize: "0.85rem",
+    marginBottom: "0.5rem",
+    cursor: "pointer",
+  },
 };
 
 const NO_DATA_MESSAGE = "No se encontraron datos de tu cuenta.";
@@ -98,6 +139,7 @@ export default function AccountPage() {
   const [isOpenDeleteModal, openDeleteModal, closeDeleteModal] = useModal();
   const [isOpenChangePasswordModal, openChangePasswordModal, closeChangePasswordModal] = useModal();
   const [isOpenEditModal, openEditModal, closeEditModal] = useModal();
+  const [isAvatarSelectorOpen, setAvatarSelectorOpen] = useState(false);
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [correo, setCorreo] = useState("");
@@ -114,6 +156,39 @@ export default function AccountPage() {
       showError(resolved);
     },
   });
+
+  const [updateAvatar] = useMutation(UPDATE_USER_AVATAR);
+
+  function getUserAvatarUrl() {
+    const avatarId = data?.getUserById?.avatar || DEFAULT_AVATAR_ID;
+    const avatarEntry = getAvatarById(avatarId);
+    return avatarEntry ? avatarEntry.url : getAvatarById(DEFAULT_AVATAR_ID).url;
+  }
+
+  function getUserAvatarId() {
+    return data?.getUserById?.avatar || DEFAULT_AVATAR_ID;
+  }
+
+  function handleOpenAvatarSelector() {
+    setAvatarSelectorOpen(true);
+  }
+
+  function handleCloseAvatarSelector() {
+    setAvatarSelectorOpen(false);
+  }
+
+  async function handleAvatarSelect(avatar) {
+    try {
+      await updateAvatar({
+        variables: { id, avatar: avatar.id },
+      });
+      localStorage.setItem("avatar", avatar.id);
+      refetch();
+    } catch (exception) {
+      const resolved = resolveErrorFromException(exception);
+      showError(resolved);
+    }
+  }
 
   function handleEditToggle(user) {
     setNombre(user.nombre);
@@ -164,52 +239,80 @@ export default function AccountPage() {
     );
   }
 
+  function renderAvatar() {
+    const avatarUrl = getUserAvatarUrl();
+
+    return (
+      <Box sx={STYLES.avatarContainer}>
+        <Box sx={STYLES.avatarWrapper}>
+          <img src={avatarUrl} alt="avatar de perfil" style={STYLES.avatar} />
+          <IconButton
+            onClick={handleOpenAvatarSelector}
+            sx={STYLES.editAvatarButton}
+            aria-label="cambiar avatar"
+          >
+            <EditIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      </Box>
+    );
+  }
+
   function renderUserCard(user) {
     return (
-      <Card sx={STYLES.card}>
-        <CardContent>
-          <p className="text-center">
-            <b>Nombre: </b>
-            {user.nombre}
-          </p>
-          <p className="text-center">
-            <b>Apellido: </b>
-            {user.apellido}
-          </p>
-          <p className="text-center">
-            <b>Correo: </b>
-            {user.correo}
-          </p>
-          <p className="text-center">
-            <b>Rol: </b>
-            {extractRoleName(user)}
-          </p>
-        </CardContent>
-        <CardActions>
-          <Button
-            variant="contained"
-            style={{ ...STYLES.actionButton, width: 200 }}
-            onClick={() => handleEditToggle(user)}
-          >
-            Editar cuenta
-          </Button>
-          <Button
-            variant="contained"
-            style={{ ...STYLES.actionButton, width: 370 }}
-            onClick={openChangePasswordModal}
-          >
-            Cambiar contrasena
-          </Button>
-          <Button
-            variant="contained"
-            style={{ ...STYLES.actionButton, width: 230 }}
-            className="mt-3 text-danger"
-            onClick={openDeleteModal}
-          >
-            Eliminar cuenta
-          </Button>
-        </CardActions>
-      </Card>
+      <>
+        {renderAvatar()}
+        <Typography
+          sx={STYLES.avatarLabel}
+          onClick={handleOpenAvatarSelector}
+        >
+          Cambiar avatar
+        </Typography>
+        <Card sx={STYLES.card}>
+          <CardContent>
+            <p className="text-center">
+              <b>Nombre: </b>
+              {user.nombre}
+            </p>
+            <p className="text-center">
+              <b>Apellido: </b>
+              {user.apellido}
+            </p>
+            <p className="text-center">
+              <b>Correo: </b>
+              {user.correo}
+            </p>
+            <p className="text-center">
+              <b>Rol: </b>
+              {extractRoleName(user)}
+            </p>
+          </CardContent>
+          <CardActions>
+            <Button
+              variant="contained"
+              style={{ ...STYLES.actionButton, width: 200 }}
+              onClick={() => handleEditToggle(user)}
+            >
+              Editar cuenta
+            </Button>
+            <Button
+              variant="contained"
+              style={{ ...STYLES.actionButton, width: 370 }}
+              onClick={openChangePasswordModal}
+            >
+              Cambiar contrasena
+            </Button>
+            <Button
+              variant="contained"
+              style={{ ...STYLES.actionButton, width: 230 }}
+              className="mt-3 text-danger"
+              onClick={openDeleteModal}
+            >
+              Eliminar cuenta
+            </Button>
+          </CardActions>
+        </Card>
+      </>
     );
   }
 
@@ -237,9 +340,14 @@ export default function AccountPage() {
 
   return (
     <>
-      <img src={AVATAR_URL} alt="profile" style={STYLES.avatar} />
-
       {renderContent()}
+
+      <AvatarSelector
+        open={isAvatarSelectorOpen}
+        onClose={handleCloseAvatarSelector}
+        currentAvatarId={getUserAvatarId()}
+        onSelect={handleAvatarSelect}
+      />
 
       <DeleteModal
         open={isOpenDeleteModal}

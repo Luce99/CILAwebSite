@@ -17,11 +17,13 @@ import { gql, useMutation } from "@apollo/client";
 
 import ErrorModal from "./ErrorModal";
 import useErrorModal from "../hooks/useErrorModal";
+import AvatarSelector from "./AvatarSelector";
 import {
   ERROR_CODES,
   validateSignUpFields,
   resolveErrorFromException,
 } from "../constants/errorCodes";
+import { getAvatarById, DEFAULT_AVATAR_ID } from "../constants/avatarGallery";
 
 const theme = createTheme();
 
@@ -31,12 +33,14 @@ const CREATE_USER_MUTATION = gql`
     $apellido: String!
     $correo: String!
     $contrasena: String!
+    $avatar: String
   ) {
     createUser(
       nombre: $nombre
       apellido: $apellido
       correo: $correo
       contrasena: $contrasena
+      avatar: $avatar
     ) {
       _id
       nombre
@@ -44,6 +48,7 @@ const CREATE_USER_MUTATION = gql`
       correo
       contrasena
       direccion
+      avatar
       Rol {
         nombre
       }
@@ -75,11 +80,19 @@ export default function SignUp() {
   const [correo, setCorreo] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedAvatarId, setSelectedAvatarId] = useState(DEFAULT_AVATAR_ID);
+  const [isAvatarSelectorOpen, setAvatarSelectorOpen] = useState(false);
 
   const navigate = useNavigate();
   const { modalState, showError, closeError } = useErrorModal();
 
   const [executeCreateUser] = useMutation(CREATE_USER_MUTATION);
+
+  const selectedAvatar = getAvatarById(selectedAvatarId);
+
+  function handleAvatarSelect(avatar) {
+    setSelectedAvatarId(avatar.id);
+  }
 
   function resetForm() {
     setNombre("");
@@ -93,6 +106,7 @@ export default function SignUp() {
     localStorage.setItem("Rol", JSON.stringify(userData.Rol));
     localStorage.setItem("nombre", userData.nombre + userData.apellido);
     localStorage.setItem("id", userData._id);
+    localStorage.setItem("avatar", userData.avatar || selectedAvatarId);
     resetForm();
     navigate("/");
   }
@@ -121,7 +135,7 @@ export default function SignUp() {
 
     try {
       const { data, errors } = await executeCreateUser({
-        variables: { nombre, apellido, correo, contrasena },
+        variables: { nombre, apellido, correo, contrasena, avatar: selectedAvatarId },
       });
 
       if (errors && errors.length > 0) {
@@ -150,9 +164,38 @@ export default function SignUp() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "#f20a95" }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <Box
+            onClick={() => setAvatarSelectorOpen(true)}
+            sx={{
+              cursor: "pointer",
+              position: "relative",
+              m: 1,
+              "&:hover": { opacity: 0.8 },
+            }}
+          >
+            <img
+              src={selectedAvatar.url}
+              alt="avatar seleccionado"
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: "50%",
+                border: "3px solid #f20a95",
+                objectFit: "cover",
+                backgroundColor: "#f5f5f5",
+              }}
+            />
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "0.75rem",
+                color: "#f20a95",
+                mt: 0.5,
+              }}
+            >
+              Elige tu avatar
+            </Typography>
+          </Box>
           <Typography component="h1" variant="h3" className="registro">
             Registro
           </Typography>
@@ -256,6 +299,13 @@ export default function SignUp() {
           </Box>
         </Box>
         <Copyright sx={{ mt: 5 }} />
+
+        <AvatarSelector
+          open={isAvatarSelectorOpen}
+          onClose={() => setAvatarSelectorOpen(false)}
+          currentAvatarId={selectedAvatarId}
+          onSelect={handleAvatarSelect}
+        />
 
         <ErrorModal
           {...modalState}
