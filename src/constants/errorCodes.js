@@ -175,6 +175,15 @@ function isOffline() {
   return navigator.onLine === false;
 }
 
+function isRequestAborted(error) {
+  if (isEmptyValue(error)) {
+    return false;
+  }
+  const isAbortName = error.name === "AbortError";
+  const isAbortMessage = typeof error.message === "string" && error.message.includes("aborted");
+  return isAbortName || isAbortMessage;
+}
+
 /**
  * Extrae el mensaje legible de un error GraphQL del backend.
  */
@@ -226,7 +235,23 @@ export function resolveErrorFromException(exception) {
     return ERROR_CODES.NETWORK_OFFLINE;
   }
 
+  const isAbortError = isRequestAborted(exception);
+  if (isAbortError) {
+    return {
+      ...ERROR_CODES.NETWORK_TIMEOUT,
+      detail: "La solicitud fue cancelada porque el servidor tardo demasiado en responder. Puede estar iniciandose. Intenta de nuevo en unos segundos.",
+    };
+  }
+
   if (exception?.networkError) {
+    const networkAbort = isRequestAborted(exception.networkError);
+    if (networkAbort) {
+      return {
+        ...ERROR_CODES.NETWORK_TIMEOUT,
+        detail: "La solicitud fue cancelada por timeout. El servidor puede estar dormido. Intenta de nuevo.",
+      };
+    }
+
     const statusCode = exception.networkError.statusCode;
     const networkMessage = exception.networkError.message || "";
     const isServerStarting = statusCode === 502 || statusCode === 503 || networkMessage.includes("ECONNREFUSED");
@@ -234,7 +259,7 @@ export function resolveErrorFromException(exception) {
     if (isServerStarting) {
       return {
         ...ERROR_CODES.SERVER_UNREACHABLE,
-        detail: "El servidor puede estar iniciandose. Render.com apaga servicios gratuitos tras inactividad. Espera 30 segundos e intenta de nuevo.",
+        detail: "El servidor puede estar iniciandose. Render.com apaga servicios gratuitos tras inactividad. Espera unos segundos e intenta de nuevo.",
       };
     }
 

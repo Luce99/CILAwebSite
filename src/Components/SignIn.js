@@ -124,6 +124,13 @@ export default function SignIn() {
     }
   }
 
+  function resolveButtonBackgroundColor() {
+    if (isSubmitting) {
+      return "#b2dfdb";
+    }
+    return "aqua";
+  }
+
   function renderSubmitButtonContent() {
     if (isSubmitting) {
       return <CircularProgress size={24} color="inherit" />;
@@ -187,7 +194,7 @@ export default function SignIn() {
             sx={{ mt: 3, mb: 2 }}
             style={{
               color: "black",
-              backgroundColor: isSubmitting ? "#b2dfdb" : "aqua",
+              backgroundColor: resolveButtonBackgroundColor(),
               fontSize: "15px",
               fontWeight: "bold",
               boxShadow: "10px 5px 5px #09b588",
