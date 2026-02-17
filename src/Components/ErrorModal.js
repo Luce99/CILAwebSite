@@ -128,7 +128,8 @@ function ErrorModal({
   }
 
   function renderDetail() {
-    if (!detail) {
+    const hasDetail = Boolean(detail);
+    if (hasDetail === false) {
       return null;
     }
 
@@ -145,8 +146,9 @@ function ErrorModal({
 
   function renderErrorCode() {
     const visibleCode = displayCode || errorCode;
+    const shouldShowCode = showCode && Boolean(visibleCode);
 
-    if (!showCode || !visibleCode) {
+    if (shouldShowCode === false) {
       return null;
     }
 
