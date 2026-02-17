@@ -29,6 +29,7 @@ const LOGIN_MUTATION = gql`
       correo
       contrasena
       direccion
+      genero
       avatar
       Rol {
         nombre
@@ -73,7 +74,8 @@ export default function SignIn() {
     localStorage.setItem("Rol", JSON.stringify(loginData.Rol));
     localStorage.setItem("nombre", loginData.nombre + loginData.apellido);
     localStorage.setItem("id", loginData._id);
-    localStorage.setItem("avatar", loginData.avatar || "fem-1");
+    localStorage.setItem("genero", loginData.genero || "no_especificado");
+    localStorage.setItem("avatar", loginData.avatar || "neu-1");
     setCorreo("");
     setContrasena("");
     navigate("/");

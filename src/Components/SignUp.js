@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -7,10 +6,13 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import CircularProgress from "@mui/material/CircularProgress";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import RadioGroup from "@mui/material/RadioGroup";
+import Radio from "@mui/material/Radio";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { gql, useMutation } from "@apollo/client";
@@ -23,7 +25,13 @@ import {
   validateSignUpFields,
   resolveErrorFromException,
 } from "../constants/errorCodes";
-import { getAvatarById, DEFAULT_AVATAR_ID } from "../constants/avatarGallery";
+import {
+  getAvatarById,
+  DEFAULT_AVATAR_ID,
+  GENDER_OPTIONS,
+  DEFAULT_GENDER,
+  getDefaultAvatarByGender,
+} from "../constants/avatarGallery";
 
 const theme = createTheme();
 
@@ -33,6 +41,7 @@ const CREATE_USER_MUTATION = gql`
     $apellido: String!
     $correo: String!
     $contrasena: String!
+    $genero: String
     $avatar: String
   ) {
     createUser(
@@ -40,6 +49,7 @@ const CREATE_USER_MUTATION = gql`
       apellido: $apellido
       correo: $correo
       contrasena: $contrasena
+      genero: $genero
       avatar: $avatar
     ) {
       _id
@@ -48,6 +58,7 @@ const CREATE_USER_MUTATION = gql`
       correo
       contrasena
       direccion
+      genero
       avatar
       Rol {
         nombre
@@ -79,8 +90,10 @@ export default function SignUp() {
   const [apellido, setApellido] = useState("");
   const [correo, setCorreo] = useState("");
   const [contrasena, setContrasena] = useState("");
+  const [genero, setGenero] = useState(DEFAULT_GENDER);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedAvatarId, setSelectedAvatarId] = useState(DEFAULT_AVATAR_ID);
+  const [hasManuallySelectedAvatar, setHasManuallySelectedAvatar] = useState(false);
   const [isAvatarSelectorOpen, setAvatarSelectorOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -90,8 +103,19 @@ export default function SignUp() {
 
   const selectedAvatar = getAvatarById(selectedAvatarId);
 
+  function handleGenderChange(event) {
+    const newGender = event.target.value;
+    setGenero(newGender);
+
+    if (!hasManuallySelectedAvatar) {
+      const defaultForGender = getDefaultAvatarByGender(newGender);
+      setSelectedAvatarId(defaultForGender);
+    }
+  }
+
   function handleAvatarSelect(avatar) {
     setSelectedAvatarId(avatar.id);
+    setHasManuallySelectedAvatar(true);
   }
 
   function resetForm() {
@@ -106,6 +130,7 @@ export default function SignUp() {
     localStorage.setItem("Rol", JSON.stringify(userData.Rol));
     localStorage.setItem("nombre", userData.nombre + userData.apellido);
     localStorage.setItem("id", userData._id);
+    localStorage.setItem("genero", userData.genero || genero);
     localStorage.setItem("avatar", userData.avatar || selectedAvatarId);
     resetForm();
     navigate("/");
@@ -135,7 +160,7 @@ export default function SignUp() {
 
     try {
       const { data, errors } = await executeCreateUser({
-        variables: { nombre, apellido, correo, contrasena, avatar: selectedAvatarId },
+        variables: { nombre, apellido, correo, contrasena, genero, avatar: selectedAvatarId },
       });
 
       if (errors && errors.length > 0) {
@@ -260,6 +285,36 @@ export default function SignUp() {
                   onChange={(evt) => setContrasena(evt.target.value)}
                   disabled={isSubmitting}
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl component="fieldset" disabled={isSubmitting}>
+                  <FormLabel
+                    component="legend"
+                    sx={{
+                      color: "#333",
+                      "&.Mui-focused": { color: "#f20a95" },
+                      fontWeight: 500,
+                      mb: 0.5,
+                    }}
+                  >
+                    Genero
+                  </FormLabel>
+                  <RadioGroup
+                    row
+                    value={genero}
+                    onChange={handleGenderChange}
+                    name="genero"
+                  >
+                    {GENDER_OPTIONS.map((option) => (
+                      <FormControlLabel
+                        key={option.value}
+                        value={option.value}
+                        control={<Radio sx={{ color: "#f20a95", "&.Mui-checked": { color: "#f20a95" } }} />}
+                        label={option.label}
+                      />
+                    ))}
+                  </RadioGroup>
+                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
