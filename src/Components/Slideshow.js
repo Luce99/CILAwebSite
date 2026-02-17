@@ -15,7 +15,7 @@ const Slideshow = ({
 
 	const siguiente = useCallback(() => {
 		// Comprobamos que el slideshow tenga elementos
-		if(slideshow.current.children.length > 0){
+		if(slideshow.current && slideshow.current.children.length > 0){
 			// console.log('Siguiente')
 
 			// Obtenemos el primer elemento del slideshow.
@@ -47,8 +47,7 @@ const Slideshow = ({
 	}, [velocidad]);
 	
 	const anterior = () => {
-		// console.log('Anterior');
-		if(slideshow.current.children.length > 0){
+		if(slideshow.current && slideshow.current.children.length > 0){
 			// Obtenemos el ultimo elemento del slideshow.
 			const index = slideshow.current.children.length - 1;
 			const ultimoElemento = slideshow.current.children[index];
@@ -67,21 +66,34 @@ const Slideshow = ({
 
 	useEffect(() => {
 		if(autoplay){
+			const slideshowNode = slideshow.current;
+
 			intervaloSlideshow.current = setInterval(() => {
 				siguiente();
 			}, intervalo);
 	
-			// Eliminamos los intervalos
-			slideshow.current.addEventListener('mouseenter', () => {
+			const handleMouseEnter = () => {
 				clearInterval(intervaloSlideshow.current);
-			});
-	
-			// Volvemos a poner el intervalo cuando saquen el cursor del slideshow
-			slideshow.current.addEventListener('mouseleave', () => {
+			};
+
+			const handleMouseLeave = () => {
 				intervaloSlideshow.current = setInterval(() => {
 					siguiente();
 				}, intervalo);
-			});
+			};
+
+			if (slideshowNode) {
+				slideshowNode.addEventListener('mouseenter', handleMouseEnter);
+				slideshowNode.addEventListener('mouseleave', handleMouseLeave);
+			}
+
+			return () => {
+				clearInterval(intervaloSlideshow.current);
+				if (slideshowNode) {
+					slideshowNode.removeEventListener('mouseenter', handleMouseEnter);
+					slideshowNode.removeEventListener('mouseleave', handleMouseLeave);
+				}
+			};
 		}
 	}, [autoplay, intervalo, siguiente]);
 
