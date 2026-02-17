@@ -1,108 +1,55 @@
-import * as React from 'react';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+import React from "react";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
 
-export default function AddressForm() {
+const ADDRESS_FIELDS = [
+  { id: "firstName", label: "Nombre", required: true, sm: 6 },
+  { id: "lastName", label: "Apellido", required: true, sm: 6 },
+  { id: "address1", label: "Dirección línea 1", required: true, sm: 12 },
+  { id: "address2", label: "Dirección línea 2 (opcional)", required: false, sm: 12 },
+  { id: "city", label: "Ciudad", required: true, sm: 6 },
+  { id: "state", label: "Departamento / Provincia", required: false, sm: 6 },
+  { id: "zip", label: "Código postal", required: true, sm: 6 },
+  { id: "country", label: "País", required: true, sm: 6 },
+];
+
+function AddressField({ field, value, onChange }) {
+  function handleChange(event) {
+    onChange(field.id, event.target.value);
+  }
+
+  return (
+    <Grid item xs={12} sm={field.sm}>
+      <TextField
+        required={field.required}
+        id={field.id}
+        name={field.id}
+        label={field.label}
+        fullWidth
+        variant="standard"
+        value={value}
+        onChange={handleChange}
+      />
+    </Grid>
+  );
+}
+
+export default function AddressForm({ addressData, onAddressChange }) {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
         Dirección de envío
       </Typography>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="firstName"
-            name="firstName"
-            label="First name"
-            fullWidth
-            autoComplete="given-name"
-            variant="standard"
+        {ADDRESS_FIELDS.map((field) => (
+          <AddressField
+            key={field.id}
+            field={field}
+            value={addressData[field.id] || ""}
+            onChange={onAddressChange}
           />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="lastName"
-            name="lastName"
-            label="Last name"
-            fullWidth
-            autoComplete="family-name"
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            required
-            id="address1"
-            name="address1"
-            label="Address line 1"
-            fullWidth
-            autoComplete="shipping address-line1"
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            id="address2"
-            name="address2"
-            label="Address line 2"
-            fullWidth
-            autoComplete="shipping address-line2"
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="city"
-            name="city"
-            label="City"
-            fullWidth
-            autoComplete="shipping address-level2"
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            id="state"
-            name="state"
-            label="State/Province/Region"
-            fullWidth
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="zip"
-            name="zip"
-            label="Zip / Postal code"
-            fullWidth
-            autoComplete="shipping postal-code"
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="country"
-            name="country"
-            label="Country"
-            fullWidth
-            autoComplete="shipping country"
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={<Checkbox color="secondary" name="saveAddress" value="yes" />}
-            label="Use this address for payment details"
-          />
-        </Grid>
+        ))}
       </Grid>
     </React.Fragment>
   );

@@ -1,88 +1,95 @@
-import * as React from 'react';
-import Typography from '@mui/material/Typography';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Grid from '@mui/material/Grid';
+import React from "react";
+import Typography from "@mui/material/Typography";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Grid from "@mui/material/Grid";
+import accounting from "accounting";
 
-const products = [
-  {
-    name: 'Product 1',
-    desc: 'A nice thing',
-    price: '$9.99',
-  },
-  {
-    name: 'Product 2',
-    desc: 'Another thing',
-    price: '$3.45',
-  },
-  {
-    name: 'Product 3',
-    desc: 'Something else',
-    price: '$6.51',
-  },
-  {
-    name: 'Product 4',
-    desc: 'Best thing of all',
-    price: '$14.11',
-  },
-  { name: 'Shipping', desc: '', price: 'Free' },
-];
+const SHIPPING_LABEL = "Envío";
+const SHIPPING_COST_LABEL = "Gratis";
 
-const addresses = ['1 MUI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
-const payments = [
-  { name: 'Card type', detail: 'Visa' },
-  { name: 'Card holder', detail: 'Mr John Smith' },
-  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
-  { name: 'Expiry date', detail: '04/2024' },
-];
+function OrderItemRow({ item }) {
+  const formattedPrice = accounting.formatMoney(
+    item.price * item.quantity,
+    "$",
+    "cop"
+  );
 
-export default function Review() {
+  return (
+    <ListItem sx={{ py: 1, px: 0 }}>
+      <ListItemText
+        primary={item.name}
+        secondary={`Cantidad: ${item.quantity}`}
+      />
+      <Typography variant="body2">{formattedPrice}</Typography>
+    </ListItem>
+  );
+}
+
+function OrderTotalRow({ total }) {
+  const formattedTotal = accounting.formatMoney(total, "$", "cop");
+
+  return (
+    <ListItem sx={{ py: 1, px: 0 }}>
+      <ListItemText primary="Total" />
+      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+        {formattedTotal}
+      </Typography>
+    </ListItem>
+  );
+}
+
+function ShippingRow() {
+  return (
+    <ListItem sx={{ py: 1, px: 0 }}>
+      <ListItemText primary={SHIPPING_LABEL} />
+      <Typography variant="body2">{SHIPPING_COST_LABEL}</Typography>
+    </ListItem>
+  );
+}
+
+function ShippingDetails({ shippingAddress }) {
+  if (!shippingAddress) {
+    return null;
+  }
+
+  const fullName = `${shippingAddress.firstName} ${shippingAddress.lastName}`;
+  const addressParts = [
+    shippingAddress.address1,
+    shippingAddress.address2,
+    shippingAddress.city,
+    shippingAddress.state,
+    shippingAddress.zip,
+    shippingAddress.country,
+  ].filter(Boolean);
+
+  return (
+    <Grid item xs={12} sm={6}>
+      <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+        Dirección de envío
+      </Typography>
+      <Typography gutterBottom>{fullName}</Typography>
+      <Typography gutterBottom>{addressParts.join(", ")}</Typography>
+    </Grid>
+  );
+}
+
+export default function Review({ cartItems, shippingAddress, basketTotal }) {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Order summary
+        Resumen del pedido
       </Typography>
       <List disablePadding>
-        {products.map((product) => (
-          <ListItem key={product.name} sx={{ py: 1, px: 0 }}>
-            <ListItemText primary={product.name} secondary={product.desc} />
-            <Typography variant="body2">{product.price}</Typography>
-          </ListItem>
+        {cartItems.map((item) => (
+          <OrderItemRow key={item.id} item={item} />
         ))}
-
-        <ListItem sx={{ py: 1, px: 0 }}>
-          <ListItemText primary="Total" />
-          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-            $34.06
-          </Typography>
-        </ListItem>
+        <ShippingRow />
+        <OrderTotalRow total={basketTotal} />
       </List>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-            Shipping
-          </Typography>
-          <Typography gutterBottom>John Smith</Typography>
-          <Typography gutterBottom>{addresses.join(', ')}</Typography>
-        </Grid>
-        <Grid item container direction="column" xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-            Payment details
-          </Typography>
-          <Grid container>
-            {payments.map((payment) => (
-              <React.Fragment key={payment.name}>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.name}</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.detail}</Typography>
-                </Grid>
-              </React.Fragment>
-            ))}
-          </Grid>
-        </Grid>
+        <ShippingDetails shippingAddress={shippingAddress} />
       </Grid>
     </React.Fragment>
   );
