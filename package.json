@@ -1,0 +1,68 @@
+{
+  "name": "cila-ecommerce",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://luce99.github.io/CILAwebSite",
+  "dependencies": {
+    "@apollo/client": "^3.5.10",
+    "@emotion/react": "^11.8.1",
+    "@emotion/styled": "^11.8.1",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@mercadopago/sdk-react": "^0.0.19",
+    "@mui/icons-material": "^5.5.0",
+    "@mui/material": "^5.5.0",
+    "@mui/styles": "^5.5.0",
+    "@types/node": "^17.0.21",
+    "accounting": "^0.4.1",
+    "apollo-link-http": "^1.5.17",
+    "apollo-server-express": "^3.5.0",
+    "bcryptjs": "^2.4.3",
+    "firebase": "^9.6.8",
+    "graphql": "^15.8.0",
+    "material-ui": "^0.20.2",
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^6.2.2",
+    "react-scripts": "5.0.0",
+    "styled-components": "^5.3.3",
+    "type-graphql": "^1.1.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "predeploy": "CI=false npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^12.1.5",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/material-ui": "^0.21.12",
+    "gh-pages": "^6.3.0",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
+  }
+}
