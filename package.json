@@ -2,7 +2,6 @@
   "name": "cila-ecommerce",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "homepage": "https://luce99.github.io/CILAwebSite",
   "dependencies": {
     "@apollo/client": "^3.5.10",
@@ -36,7 +35,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
+    "predeploy": "CI=false npm run build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
