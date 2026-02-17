@@ -18,57 +18,45 @@ import { useStateValue } from "../StateProvider";
 import { actionTypes, getItemsTotal } from "../reducer";
 import { useNavigate } from "react-router-dom";
 
-const rol = localStorage.getItem("Rol");
-const isLogged = localStorage.getItem("isLogged");
-
-function administracion(rolType){
-  if (isLogged){
-    rolType = rol.toString()
-  if (rolType.includes("administrador")){
-     return [<Link to="/accountPage">Cuenta</Link>, <Link to="/admistracion">Administración</Link>]
-    } 
-  else  { 
-    return [<Link to="/accountPage">Cuenta</Link>]
-  }
-} else {
-  return [<Link to="/signin">Cuenta</Link>]
-}
-}
-const pages = [
-  <Link
-    className="link"
-    to="/"
-    style={{ color: "inherit", textDecoration: "inherit" }}
-  >
-    <span>Home</span>
-  </Link>,
-  <Link
-    className="link"
-    to="/caoticas"
-    style={{ color: "inherit", textDecoration: "inherit" }}
-  >
-    <span>Caóticas</span>
-  </Link>,
-  <Link
-  className="link"
-  to="/encantadoras"
-  style={{ color: "inherit", textDecoration: "inherit" }}
->
-  <span>Encantadoras</span>
-</Link>,
+const PAGES = [
+  { label: "Home", path: "/" },
+  { label: "Caoticas", path: "/caoticas" },
+  { label: "Encantadoras", path: "/encantadoras" },
 ];
-const settings = administracion(rol);
+
+const ADMIN_ROLE_NAME = "administrador";
+
+function buildUserMenuItems(isLogged, rolString) {
+  if (!isLogged) {
+    return [{ label: "Cuenta", path: "/signin" }];
+  }
+
+  const isAdmin = rolString && rolString.includes(ADMIN_ROLE_NAME);
+
+  if (isAdmin) {
+    return [
+      { label: "Cuenta", path: "/accountPage" },
+      { label: "Administracion", path: "/admistracion" },
+    ];
+  }
+
+  return [{ label: "Cuenta", path: "/accountPage" }];
+}
 
 export default function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [state, dispatch] = useStateValue();
   const { basket } = state;
-  const isLogged = localStorage.getItem("isLogged");
-  const history =useNavigate();
+  const navigate = useNavigate();
 
-  const handleAuth = ()=>{
-    if (isLogged){
+  const isLogged = localStorage.getItem("isLogged");
+  const rolRaw = localStorage.getItem("Rol");
+  const rolString = rolRaw ? String(rolRaw) : "";
+  const settings = buildUserMenuItems(isLogged, rolString);
+
+  function handleAuth() {
+    if (isLogged) {
       localStorage.removeItem("isLogged");
       localStorage.removeItem("Rol");
       localStorage.removeItem("nombre");
@@ -76,25 +64,27 @@ export default function Navbar() {
       dispatch({
         type: actionTypes.CLEAR_CART,
         basket: [],
-      })
-      history("/")
+      });
+      navigate("/");
     }
   }
 
-  const handleOpenNavMenu = (event) => {
+  function handleOpenNavMenu(event) {
     setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
+  }
+
+  function handleOpenUserMenu(event) {
     setAnchorElUser(event.currentTarget);
-  };
+  }
 
-  const handleCloseNavMenu = () => {
+  function handleCloseNavMenu() {
     setAnchorElNav(null);
-  };
+  }
 
-  const handleCloseUserMenu = () => {
+  function handleCloseUserMenu() {
     setAnchorElUser(null);
-  };
+  }
+
   return (
     <AppBar
       position="static"
@@ -108,19 +98,17 @@ export default function Navbar() {
         <Toolbar disableGutters className="menu">
           <Link to="/">
             <img
-              nowrap="true"
-              component="div"
               src={logo}
               alt="logo"
               height={"50rem"}
               width={"50rem"}
-              sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
-            ></img>
+              style={{ marginRight: 8, display: "flex" }}
+            />
           </Link>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="menu de navegacion"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -146,10 +134,17 @@ export default function Navbar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <div className="home">
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography>{page}</Typography>
+              {PAGES.map((page) => (
+                <div className="home" key={page.path}>
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography>
+                      <Link
+                        to={page.path}
+                        style={{ color: "inherit", textDecoration: "inherit" }}
+                      >
+                        {page.label}
+                      </Link>
+                    </Typography>
                   </MenuItem>
                 </div>
               ))}
@@ -157,9 +152,9 @@ export default function Navbar() {
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <div className="nav">
-              {pages.map((page) => (
+              {PAGES.map((page) => (
                 <Button
-                  key={page}
+                  key={page.path}
                   onClick={handleCloseNavMenu}
                   style={{
                     fontSize: "20px",
@@ -167,7 +162,13 @@ export default function Navbar() {
                     color: "#ffffff",
                   }}
                 >
-                  {page}
+                  <Link
+                    className="link"
+                    to={page.path}
+                    style={{ color: "inherit", textDecoration: "inherit" }}
+                  >
+                    <span>{page.label}</span>
+                  </Link>
                 </Button>
               ))}
             </div>
@@ -177,8 +178,8 @@ export default function Navbar() {
             to="/signin"
             style={{ color: "inherit", textDecoration: "inherit" }}
           >
-            <Button color="inherit" style={{fontSize:"20px"}} onClick={handleAuth}>
-            <strong>{isLogged ?"Log out" : "Log in"}</strong>
+            <Button color="inherit" style={{ fontSize: "20px" }} onClick={handleAuth}>
+              <strong>{isLogged ? "Log out" : "Log in"}</strong>
             </Button>
           </Link>
           <Link to="carritoDeCompras">
@@ -194,13 +195,13 @@ export default function Navbar() {
             </div>
           </Link>
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title="Opciones">
               <div className="account">
                 <IconButton
                   onClick={handleOpenUserMenu}
                   edge="start"
                   color="inherit"
-                  aria-label="menu"
+                  aria-label="menu de usuario"
                   sx={{ p: 0 }}
                 >
                   <AccountCircleIcon fontSize="large" />
@@ -209,7 +210,7 @@ export default function Navbar() {
             </Tooltip>
             <Menu
               sx={{ mt: "45px" }}
-              id="menu-appbar"
+              id="menu-appbar-user"
               anchorEl={anchorElUser}
               anchorOrigin={{
                 vertical: "top",
@@ -224,12 +225,17 @@ export default function Navbar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <div className="settings">
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <div className="settings" key={setting.path}>
+                  <MenuItem onClick={handleCloseUserMenu}>
                     <Typography
                       style={{ fontWeight: "bold", color: "#f20a95" }}
                     >
-                      {setting}
+                      <Link
+                        to={setting.path}
+                        style={{ color: "inherit", textDecoration: "inherit" }}
+                      >
+                        {setting.label}
+                      </Link>
                     </Typography>
                   </MenuItem>
                 </div>

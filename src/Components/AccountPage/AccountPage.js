@@ -3,142 +3,308 @@ import DeleteModal from "./components/DeleteModal";
 import ChangePasswordModal from "./components/ChangePasswordModal";
 import useModal from "../hooks/useModal";
 import EditModal from "./components/EditModal";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
 
+import ErrorModal from "../ErrorModal";
+import useErrorModal from "../../hooks/useErrorModal";
+import { ERROR_CODES, resolveErrorFromException } from "../../constants/errorCodes";
+import AvatarSelector from "../AvatarSelector";
+import { getAvatarById, DEFAULT_AVATAR_ID } from "../../constants/avatarGallery";
+
+const GET_USER_BY_ID = gql`
+  query GetUserById($id: String!) {
+    getUserById(_id: $id) {
+      _id
+      apellido
+      nombre
+      correo
+      contrasena
+      direccion
+      avatar
+      Rol {
+        nombre
+      }
+    }
+  }
+`;
+
+const UPDATE_USER_AVATAR = gql`
+  mutation UpdateUser($id: ID!, $avatar: String) {
+    updateUser(_id: $id, avatar: $avatar) {
+      _id
+      avatar
+    }
+  }
+`;
+
+const STYLES = {
+  avatarContainer: {
+    position: "relative",
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "1rem",
+    marginBottom: "0.5rem",
+  },
+  avatarWrapper: {
+    position: "relative",
+    width: "200px",
+    height: "200px",
+  },
+  avatar: {
+    width: "200px",
+    height: "200px",
+    borderRadius: "50%",
+    objectFit: "cover",
+    border: "4px solid #f20a95",
+    backgroundColor: "#f5f5f5",
+  },
+  editAvatarButton: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
+    backgroundColor: "#f20a95",
+    color: "white",
+    width: 36,
+    height: 36,
+    "&:hover": { backgroundColor: "#d1087e" },
+  },
+  card: {
+    maxWidth: 370,
+    backgroundColor: "#78afa9",
+    color: "#dedede",
+    padding: "2rem",
+    display: "flex",
+    marginLeft: "auto",
+    marginRight: "auto",
+    flexDirection: "column",
+    marginBottom: "3rem",
+    marginTop: "1rem",
+  },
+  loadingContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: "3rem",
+    marginBottom: "3rem",
+    gap: "16px",
+  },
+  errorContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: "2rem",
+    marginBottom: "2rem",
+    padding: "2rem",
+    gap: "16px",
+  },
+  actionButton: {
+    color: "#474444",
+    backgroundColor: "#dedede",
+    fontSize: "15px",
+    fontWeight: "bold",
+    boxShadow: "2.5px 2.5px #474444",
+  },
+  avatarLabel: {
+    textAlign: "center",
+    color: "#f20a95",
+    fontWeight: 500,
+    fontSize: "0.85rem",
+    marginBottom: "0.5rem",
+    cursor: "pointer",
+  },
+};
+
+const NO_DATA_MESSAGE = "No se encontraron datos de tu cuenta.";
+const ROLE_FALLBACK = "Sin rol asignado";
+
+function extractRoleName(user) {
+  if (!user || !user.Rol) {
+    return ROLE_FALLBACK;
+  }
+  return user.Rol.nombre || ROLE_FALLBACK;
+}
 
 export default function AccountPage() {
   const [isOpenDeleteModal, openDeleteModal, closeDeleteModal] = useModal();
-  const [
-    isOpenChangePasswordModal,
-    openChangePasswordModal,
-    closeChangePasswordModal,
-  ] = useModal();
+  const [isOpenChangePasswordModal, openChangePasswordModal, closeChangePasswordModal] = useModal();
   const [isOpenEditModal, openEditModal, closeEditModal] = useModal();
+  const [isAvatarSelectorOpen, setAvatarSelectorOpen] = useState(false);
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [correo, setCorreo] = useState("");
   const [contrasena, setContrasena] = useState("");
+
+  const { modalState, showError, closeError } = useErrorModal();
   const id = localStorage.getItem("id");
 
-  const getUserById = gql`
-    query GetUserById($id: String!) {
-      getUserById(_id: $id) {
-        _id
-        apellido
-        nombre
-        correo
-        contrasena
-        direccion
-        Rol {
-          nombre
-        }
-      }
-    }
-  `;
+  const { data, error, loading, refetch } = useQuery(GET_USER_BY_ID, {
+    variables: { id },
+    skip: !id,
+    onError: (queryError) => {
+      const resolved = resolveErrorFromException(queryError);
+      showError(resolved);
+    },
+  });
 
-  //Editar
-  function toggle(users) {
-    setNombre(users.nombre);
-    setApellido(users.apellido);
-    setCorreo(users.correo);
+  const [updateAvatar] = useMutation(UPDATE_USER_AVATAR);
+
+  function getUserAvatarUrl() {
+    const avatarId = data?.getUserById?.avatar || DEFAULT_AVATAR_ID;
+    const avatarEntry = getAvatarById(avatarId);
+    return avatarEntry ? avatarEntry.url : getAvatarById(DEFAULT_AVATAR_ID).url;
+  }
+
+  function getUserAvatarId() {
+    return data?.getUserById?.avatar || DEFAULT_AVATAR_ID;
+  }
+
+  function handleOpenAvatarSelector() {
+    setAvatarSelectorOpen(true);
+  }
+
+  function handleCloseAvatarSelector() {
+    setAvatarSelectorOpen(false);
+  }
+
+  async function handleAvatarSelect(avatar) {
+    try {
+      await updateAvatar({
+        variables: { id, avatar: avatar.id },
+      });
+      localStorage.setItem("avatar", avatar.id);
+      refetch();
+    } catch (exception) {
+      const resolved = resolveErrorFromException(exception);
+      showError(resolved);
+    }
+  }
+
+  function handleEditToggle(user) {
+    setNombre(user.nombre);
+    setApellido(user.apellido);
+    setCorreo(user.correo);
     openEditModal();
   }
-  //Listar
-  const { data, error, loading } = useQuery(getUserById, { variables: { id } });
 
-  return (
-    <>
-      <img
-        src="https://www.sanboni.edu.co/onu/wp-content/uploads/avatar-mujer.png"
-        alt="profile"
-        style={{
-          width: "200px",
-          height: "200px",
-          borderRadius: "50%",
-          display: "flex",
-          marginLeft: "auto",
-          marginRight: "auto",
-          objectFit: "cover",
-        }}
-      ></img>
-      {data ? (
-        <Card
-          sx={{
-            maxWidth: 370,
-            backgroundColor: "#78afa9",
-            color: "#dedede",
-            padding: "2rem",
-            display: "flex",
-            marginLeft: "auto",
-            marginRight: "auto",
-            flexDirection: "column",
-            marginBottom: "3rem",
-            marginTop: "2rem",
-          }}
+  function handleRetry() {
+    closeError();
+    refetch();
+  }
+
+  function renderLoading() {
+    return (
+      <Box sx={STYLES.loadingContainer}>
+        <CircularProgress sx={{ color: "#f20a95" }} />
+        <Typography variant="body1" color="text.secondary">
+          Cargando tu informacion...
+        </Typography>
+      </Box>
+    );
+  }
+
+  function renderNoSession() {
+    return (
+      <Box sx={STYLES.errorContainer}>
+        <Typography variant="h6" color="text.secondary">
+          No hay sesion activa
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Por favor, inicia sesion para ver tu cuenta.
+        </Typography>
+      </Box>
+    );
+  }
+
+  function renderNoData() {
+    return (
+      <Box sx={STYLES.errorContainer}>
+        <Typography variant="body1" color="text.secondary">
+          {NO_DATA_MESSAGE}
+        </Typography>
+        <Button variant="outlined" onClick={handleRetry} sx={{ color: "#f20a95", borderColor: "#f20a95" }}>
+          Reintentar
+        </Button>
+      </Box>
+    );
+  }
+
+  function renderAvatar() {
+    const avatarUrl = getUserAvatarUrl();
+
+    return (
+      <Box sx={STYLES.avatarContainer}>
+        <Box sx={STYLES.avatarWrapper}>
+          <img src={avatarUrl} alt="avatar de perfil" style={STYLES.avatar} />
+          <IconButton
+            onClick={handleOpenAvatarSelector}
+            sx={STYLES.editAvatarButton}
+            aria-label="cambiar avatar"
+          >
+            <EditIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      </Box>
+    );
+  }
+
+  function renderUserCard(user) {
+    return (
+      <>
+        {renderAvatar()}
+        <Typography
+          sx={STYLES.avatarLabel}
+          onClick={handleOpenAvatarSelector}
         >
+          Cambiar avatar
+        </Typography>
+        <Card sx={STYLES.card}>
           <CardContent>
             <p className="text-center">
               <b>Nombre: </b>
-              {data.getUserById.nombre}
+              {user.nombre}
             </p>
             <p className="text-center">
               <b>Apellido: </b>
-              {data.getUserById.apellido}
+              {user.apellido}
             </p>
             <p className="text-center">
               <b>Correo: </b>
-              {data.getUserById.correo}
+              {user.correo}
             </p>
             <p className="text-center">
               <b>Rol: </b>
-              {data.getUserById.Rol.nombre}
+              {extractRoleName(user)}
             </p>
           </CardContent>
           <CardActions>
             <Button
               variant="contained"
-              style={{
-                color: "#474444",
-                backgroundColor: "#dedede",
-                fontSize: "15px",
-                fontWeight: "bold",
-                boxShadow: "2.5px 2.5px #474444",
-                width: 200,
-                // textShadow: "0.2em 0.2em ",
-              }}
-              onClick={() => toggle(data.getUserById)}
+              style={{ ...STYLES.actionButton, width: 200 }}
+              onClick={() => handleEditToggle(user)}
             >
               Editar cuenta
             </Button>
             <Button
               variant="contained"
-              style={{
-                color: "#474444",
-                backgroundColor: "#dedede",
-                fontSize: "15px",
-                fontWeight: "bold",
-                boxShadow: " 2.5px 2.5px #474444",
-                width: 370,
-                // textShadow: "0.2em 0.2em white",
-              }}
+              style={{ ...STYLES.actionButton, width: 370 }}
               onClick={openChangePasswordModal}
             >
-              Cambiar contraseña
+              Cambiar contrasena
             </Button>
             <Button
               variant="contained"
-              style={{
-                color: "#474444",
-                backgroundColor: "#dedede",
-                fontSize: "15px",
-                fontWeight: "bold",
-                boxShadow: " 2.5px 2.5px #474444",
-                width: 230,
-              }}
+              style={{ ...STYLES.actionButton, width: 230 }}
               className="mt-3 text-danger"
               onClick={openDeleteModal}
             >
@@ -146,10 +312,43 @@ export default function AccountPage() {
             </Button>
           </CardActions>
         </Card>
-      ) : (
-        //  <span>error</span>
-        console.log(error)
-      )}
+      </>
+    );
+  }
+
+  function renderContent() {
+    if (!id) {
+      return renderNoSession();
+    }
+
+    if (loading) {
+      return renderLoading();
+    }
+
+    if (error && !data) {
+      return renderNoData();
+    }
+
+    const user = data?.getUserById;
+
+    if (!user) {
+      return renderNoData();
+    }
+
+    return renderUserCard(user);
+  }
+
+  return (
+    <>
+      {renderContent()}
+
+      <AvatarSelector
+        open={isAvatarSelectorOpen}
+        onClose={handleCloseAvatarSelector}
+        currentAvatarId={getUserAvatarId()}
+        onSelect={handleAvatarSelect}
+      />
+
       <DeleteModal
         open={isOpenDeleteModal}
         handleClose={closeDeleteModal}
@@ -168,6 +367,15 @@ export default function AccountPage() {
         nombreD={nombre}
         apellidoD={apellido}
         correoD={correo}
+      />
+
+      <ErrorModal
+        {...modalState}
+        onClose={closeError}
+        secondaryAction={{
+          label: "Reintentar",
+          onClick: handleRetry,
+        }}
       />
     </>
   );
