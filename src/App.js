@@ -11,6 +11,7 @@ import SignUp from "./Components/SignUp";
 import Checkout from './Components/CheckOutForm/Checkout';
 import Encantadoras from './Components/Encantadoras';
 import { ApolloProvider } from '@apollo/client';
+import apolloClient from './apolloClient';
 import AccountPage from './Components/AccountPage';
 import NavAdministrador from './Components/Administration/NavAdministrador';
 import Users from './Components/Administration/Users';
@@ -20,7 +21,7 @@ const ROUTER_BASENAME = process.env.PUBLIC_URL || "";
 
 function App() {
   return (
-    <ApolloProvider>
+    <ApolloProvider client={apolloClient}>
       <Router basename={ROUTER_BASENAME}>
         <Fragment>
           <Navbar />
