@@ -46,9 +46,9 @@ function AppRoutes() {
 function ApolloClientWarning() {
   return (
     <div style={{ padding: "2rem", textAlign: "center" }}>
-      <h2>Error de conexion</h2>
+      <h2>Error de conexión</h2>
       <p>
-        No se pudo inicializar la conexion con el servidor.
+        No se pudo inicializar la conexión con el servidor.
         Por favor, recarga la pagina o intenta mas tarde.
       </p>
       <button

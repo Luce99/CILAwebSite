@@ -167,7 +167,7 @@ export default function SignIn() {
             required
             fullWidth
             id="email"
-            label="Direccion de correo"
+            label="Dirección de correo"
             name="email"
             autoComplete="email"
             autoFocus
@@ -180,7 +180,7 @@ export default function SignIn() {
             required
             fullWidth
             name="password"
-            label="Contrasena"
+            label="Contraseña"
             type="password"
             id="password"
             autoComplete="current-password"
@@ -205,7 +205,7 @@ export default function SignIn() {
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2" color="inherit">
-                ¿Olvidaste tu contrasena?
+                ¿Olvidaste tu contraseña?
               </Link>
             </Grid>
             <Grid item>

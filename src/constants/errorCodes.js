@@ -9,14 +9,14 @@ export const ERROR_CODES = {
     code: "NETWORK_OFFLINE",
     displayCode: "NET_01",
     severity: "error",
-    logMessage: "El navegador no tiene conexion a internet.",
-    userMessage: "Parece que no tienes conexion a internet. Verifica tu red e intenta de nuevo.",
+    logMessage: "El navegador no tiene conexión a internet.",
+    userMessage: "Parece que no tienes conexión a internet. Verifica tu red e intenta de nuevo.",
   },
   NETWORK_TIMEOUT: {
     code: "NETWORK_TIMEOUT",
     displayCode: "NET_02",
     severity: "error",
-    logMessage: "La solicitud al servidor tomo demasiado tiempo.",
+    logMessage: "La solicitud al servidor tomó demasiado tiempo.",
     userMessage: "El servidor esta tardando en responder. Por favor, intenta de nuevo en unos segundos.",
   },
   SERVER_UNREACHABLE: {
@@ -33,28 +33,28 @@ export const ERROR_CODES = {
     displayCode: "AUT_01",
     severity: "warning",
     logMessage: "Las credenciales proporcionadas son incorrectas.",
-    userMessage: "Correo o contrasena incorrectos. Revisa los datos e intenta nuevamente.",
+    userMessage: "Correo o contraseña incorrectos. Revisa los datos e intenta nuevamente.",
   },
   LOGIN_NULL_RESPONSE: {
     code: "LOGIN_NULL_RESPONSE",
     displayCode: "AUT_02",
     severity: "error",
     logMessage: "El servidor retorno null para login.",
-    userMessage: "No fue posible iniciar sesion. Verifica tus datos o intenta mas tarde.",
+    userMessage: "No fue posible iniciar sesión. Verifica tus datos o intenta más tarde.",
   },
   LOGIN_USER_NOT_FOUND: {
     code: "LOGIN_USER_NOT_FOUND",
     displayCode: "AUT_03",
     severity: "warning",
-    logMessage: "El correo no esta registrado en el sistema.",
+    logMessage: "El correo no está registrado en el sistema.",
     userMessage: "No encontramos una cuenta con ese correo. Verifica que sea correcto o registrate.",
   },
   LOGIN_WRONG_PASSWORD: {
     code: "LOGIN_WRONG_PASSWORD",
     displayCode: "AUT_04",
     severity: "warning",
-    logMessage: "La contrasena ingresada no coincide.",
-    userMessage: "La contrasena es incorrecta. Revisa e intenta de nuevo.",
+    logMessage: "La contraseña ingresada no coincide.",
+    userMessage: "La contraseña es incorrecta. Revisa e intenta de nuevo.",
   },
 
   // --- Errores de registro (REG) ---
@@ -70,14 +70,14 @@ export const ERROR_CODES = {
     displayCode: "REG_02",
     severity: "error",
     logMessage: "El servidor retorno null para createUser.",
-    userMessage: "El servidor no pudo crear tu cuenta en este momento. Intenta de nuevo mas tarde.",
+    userMessage: "El servidor no pudo crear tu cuenta en este momento. Intenta de nuevo más tarde.",
   },
   SIGNUP_EMAIL_EXISTS: {
     code: "SIGNUP_EMAIL_EXISTS",
     displayCode: "REG_03",
     severity: "warning",
-    logMessage: "El correo ya esta registrado en el sistema.",
-    userMessage: "Este correo ya esta registrado. Intenta iniciar sesion o usa otro correo.",
+    logMessage: "El correo ya está registrado en el sistema.",
+    userMessage: "Este correo ya está registrado. Intenta iniciar sesión o usa otro correo.",
   },
 
   // --- Errores de validacion (VAL) ---
@@ -99,8 +99,8 @@ export const ERROR_CODES = {
     code: "VALIDATION_WEAK_PASSWORD",
     displayCode: "VAL_03",
     severity: "warning",
-    logMessage: "La contrasena no cumple con los requisitos minimos.",
-    userMessage: "La contrasena debe tener al menos 6 caracteres.",
+    logMessage: "La contraseña no cumple con los requisitos mínimos.",
+    userMessage: "La contraseña debe tener al menos 6 caracteres.",
   },
 
   // --- Errores de servidor (SRV) ---
@@ -116,7 +116,7 @@ export const ERROR_CODES = {
     displayCode: "SRV_02",
     severity: "error",
     logMessage: "Error interno del servidor GraphQL.",
-    userMessage: "Ocurrio un error en el servidor. Nuestro equipo ha sido notificado.",
+    userMessage: "Ocurrió un error en el servidor. Nuestro equipo ha sido notificado.",
   },
 
   // --- Error generico (GEN) ---
@@ -125,7 +125,7 @@ export const ERROR_CODES = {
     displayCode: "GEN_01",
     severity: "error",
     logMessage: "Error desconocido no categorizado.",
-    userMessage: "Ocurrio un error inesperado. Por favor, intenta de nuevo.",
+    userMessage: "Ocurrió un error inesperado. Por favor, intenta de nuevo.",
   },
 };
 
@@ -145,14 +145,14 @@ export const SEVERITY_CONFIG = {
     backgroundColor: "#fff3e0",
     borderColor: "#ffcc80",
     icon: "warning",
-    label: "Atencion",
+    label: "Atención",
   },
   info: {
     color: "#1976d2",
     backgroundColor: "#e3f2fd",
     borderColor: "#90caf9",
     icon: "info",
-    label: "Informacion",
+    label: "Información",
   },
 };
 
@@ -239,7 +239,7 @@ export function resolveErrorFromException(exception) {
   if (isAbortError) {
     return {
       ...ERROR_CODES.NETWORK_TIMEOUT,
-      detail: "La solicitud fue cancelada porque el servidor tardo demasiado en responder. Puede estar iniciandose. Intenta de nuevo en unos segundos.",
+      detail: "La solicitud fue cancelada porque el servidor tardó demasiado en responder. Puede estar iniciándose. Intenta de nuevo en unos segundos.",
     };
   }
 
@@ -259,7 +259,7 @@ export function resolveErrorFromException(exception) {
     if (isServerStarting) {
       return {
         ...ERROR_CODES.SERVER_UNREACHABLE,
-        detail: "El servidor puede estar iniciandose. Render.com apaga servicios gratuitos tras inactividad. Espera unos segundos e intenta de nuevo.",
+        detail: "El servidor puede estar iniciándose. Render.com apaga servicios gratuitos tras inactividad. Espera unos segundos e intenta de nuevo.",
       };
     }
 

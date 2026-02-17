@@ -4,8 +4,8 @@ import { Typography, Container, Button, Box } from "@mui/material";
 const ERROR_MESSAGES = {
   TITLE: "Algo salio mal",
   DESCRIPTION:
-    "Ha ocurrido un error inesperado. Por favor, intenta recargar la pagina.",
-  RELOAD_BUTTON: "Recargar pagina",
+    "Ha ocurrido un error inesperado. Por favor, intenta recargar la página.",
+  RELOAD_BUTTON: "Recargar página",
   DETAILS_LABEL: "Detalles del error:",
 };
 

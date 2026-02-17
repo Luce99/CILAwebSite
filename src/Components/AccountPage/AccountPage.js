@@ -214,7 +214,7 @@ export default function AccountPage() {
       <Box sx={STYLES.loadingContainer}>
         <CircularProgress sx={{ color: "#f20a95" }} />
         <Typography variant="body1" color="text.secondary">
-          Cargando tu informacion...
+          Cargando tu información...
         </Typography>
       </Box>
     );
@@ -237,10 +237,10 @@ export default function AccountPage() {
       return (
         <Box sx={STYLES.errorContainer}>
           <Typography variant="h6" color="text.secondary">
-            Sesion incompleta
+            Sesión incompleta
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ textAlign: "center", maxWidth: 400 }}>
-            Tu sesion no tiene toda la informacion necesaria. Esto puede pasar si hubo un error durante el registro. Por favor, inicia sesion de nuevo.
+            Tu sesión no tiene toda la información necesaria. Esto puede pasar si hubo un error durante el registro. Por favor, inicia sesión de nuevo.
           </Typography>
           <Button
             variant="contained"
@@ -251,7 +251,7 @@ export default function AccountPage() {
               "&:hover": { backgroundColor: "#d1087e" },
             }}
           >
-            Ir a iniciar sesion
+            Ir a iniciar sesión
           </Button>
         </Box>
       );
@@ -260,17 +260,17 @@ export default function AccountPage() {
     return (
       <Box sx={STYLES.errorContainer}>
         <Typography variant="h6" color="text.secondary">
-          No hay sesion activa
+          No hay sesión activa
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Por favor, inicia sesion para ver tu cuenta.
+          Por favor, inicia sesión para ver tu cuenta.
         </Typography>
         <Button
           variant="outlined"
           onClick={() => navigate("/signin")}
           sx={{ mt: 2, color: "#f20a95", borderColor: "#f20a95" }}
         >
-          Iniciar sesion
+          Iniciar sesión
         </Button>
       </Box>
     );
@@ -350,7 +350,7 @@ export default function AccountPage() {
               style={{ ...STYLES.actionButton, width: 370 }}
               onClick={openChangePasswordModal}
             >
-              Cambiar contrasena
+              Cambiar contraseña
             </Button>
             <Button
               variant="contained"
