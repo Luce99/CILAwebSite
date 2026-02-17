@@ -105,17 +105,41 @@ function ErrorModal({
   primaryAction = null,
   secondaryAction = null,
 }) {
-  const safeSeverity = SEVERITY_CONFIG[severity] ? severity : DEFAULT_SEVERITY;
+  const safeSeverity = resolveSafeSeverity();
   const config = SEVERITY_CONFIG[safeSeverity];
   const IconComponent = SEVERITY_ICONS[safeSeverity];
-  const displayTitle = title || DEFAULT_TITLES[safeSeverity];
+  const displayTitle = resolveTitle();
 
   const defaultPrimaryAction = {
     label: "Entendido",
     onClick: onClose,
   };
 
-  const resolvedPrimaryAction = primaryAction || defaultPrimaryAction;
+  const resolvedPrimaryAction = resolvePrimaryAction();
+
+  function resolveSafeSeverity() {
+    const isKnownSeverity = Boolean(SEVERITY_CONFIG[severity]);
+    if (isKnownSeverity) {
+      return severity;
+    }
+    return DEFAULT_SEVERITY;
+  }
+
+  function resolveTitle() {
+    const hasCustomTitle = Boolean(title);
+    if (hasCustomTitle) {
+      return title;
+    }
+    return DEFAULT_TITLES[safeSeverity];
+  }
+
+  function resolvePrimaryAction() {
+    const hasCustomPrimary = Boolean(primaryAction);
+    if (hasCustomPrimary) {
+      return primaryAction;
+    }
+    return defaultPrimaryAction;
+  }
 
   function renderIcon() {
     return (
@@ -125,6 +149,14 @@ function ErrorModal({
         </Box>
       </Box>
     );
+  }
+
+  function resolveVisibleCode() {
+    const hasDisplayCode = Boolean(displayCode);
+    if (hasDisplayCode) {
+      return displayCode;
+    }
+    return errorCode;
   }
 
   function renderDetail() {
@@ -145,7 +177,7 @@ function ErrorModal({
   }
 
   function renderErrorCode() {
-    const visibleCode = displayCode || errorCode;
+    const visibleCode = resolveVisibleCode();
     const shouldShowCode = showCode && Boolean(visibleCode);
 
     if (shouldShowCode === false) {
