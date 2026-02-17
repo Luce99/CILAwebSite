@@ -159,16 +159,33 @@ export const SEVERITY_CONFIG = {
 const MIN_PASSWORD_LENGTH = 6;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function isEmptyValue(value) {
+  return value === null || value === undefined || value === "";
+}
+
+function isBlankString(value) {
+  return isEmptyValue(value) || value.trim() === "";
+}
+
+function isValidEmail(correo) {
+  return EMAIL_REGEX.test(correo);
+}
+
+function isOffline() {
+  return navigator.onLine === false;
+}
+
 /**
  * Extrae el mensaje legible de un error GraphQL del backend.
  */
 function extractBackendMessage(graphQLError) {
-  if (!graphQLError) {
+  if (isEmptyValue(graphQLError)) {
     return null;
   }
 
   const validationErrors = graphQLError?.extensions?.errors;
-  if (Array.isArray(validationErrors) && validationErrors.length > 0) {
+  const hasValidationErrors = Array.isArray(validationErrors) && validationErrors.length > 0;
+  if (hasValidationErrors) {
     return validationErrors.map((e) => e.message).join(". ");
   }
 
@@ -179,7 +196,7 @@ function extractBackendMessage(graphQLError) {
  * Detecta errores especificos de login basandose en el mensaje del backend.
  */
 function resolveLoginSpecificError(backendMessage) {
-  if (!backendMessage) {
+  if (isEmptyValue(backendMessage)) {
     return null;
   }
 
@@ -205,15 +222,16 @@ function resolveLoginSpecificError(backendMessage) {
  * Incluye el mensaje real del backend como detalle adicional.
  */
 export function resolveErrorFromException(exception) {
-  if (!navigator.onLine) {
+  if (isOffline()) {
     return ERROR_CODES.NETWORK_OFFLINE;
   }
 
   if (exception?.networkError) {
     const statusCode = exception.networkError.statusCode;
     const networkMessage = exception.networkError.message || "";
+    const isServerStarting = statusCode === 502 || statusCode === 503 || networkMessage.includes("ECONNREFUSED");
 
-    if (statusCode === 502 || statusCode === 503 || networkMessage.includes("ECONNREFUSED")) {
+    if (isServerStarting) {
       return {
         ...ERROR_CODES.SERVER_UNREACHABLE,
         detail: "El servidor puede estar iniciandose. Render.com apaga servicios gratuitos tras inactividad. Espera 30 segundos e intenta de nuevo.",
@@ -226,7 +244,8 @@ export function resolveErrorFromException(exception) {
     };
   }
 
-  if (exception?.graphQLErrors?.length > 0) {
+  const hasGraphQLErrors = exception?.graphQLErrors?.length > 0;
+  if (hasGraphQLErrors) {
     const firstError = exception.graphQLErrors[0];
     const extensionCode = firstError?.extensions?.code;
     const backendMessage = extractBackendMessage(firstError);
@@ -250,7 +269,8 @@ export function resolveErrorFromException(exception) {
     };
   }
 
-  if (exception?.message?.includes("Failed to fetch")) {
+  const isFailedToFetch = exception?.message?.includes("Failed to fetch");
+  if (isFailedToFetch) {
     return {
       ...ERROR_CODES.SERVER_UNREACHABLE,
       detail: "No se pudo conectar con el servidor. Puede estar inactivo o en mantenimiento.",
@@ -268,11 +288,12 @@ export function resolveErrorFromException(exception) {
  * Retorna null si todo es valido, o el error correspondiente.
  */
 export function validateSignUpFields(nombre, apellido, correo, contrasena) {
-  if (!nombre?.trim() || !apellido?.trim() || !correo?.trim() || !contrasena?.trim()) {
+  const hasEmptyFields = isBlankString(nombre) || isBlankString(apellido) || isBlankString(correo) || isBlankString(contrasena);
+  if (hasEmptyFields) {
     return ERROR_CODES.VALIDATION_EMPTY_FIELDS;
   }
 
-  if (!EMAIL_REGEX.test(correo)) {
+  if (isValidEmail(correo) === false) {
     return ERROR_CODES.VALIDATION_INVALID_EMAIL;
   }
 
@@ -288,11 +309,12 @@ export function validateSignUpFields(nombre, apellido, correo, contrasena) {
  * Retorna null si todo es valido, o el error correspondiente.
  */
 export function validateSignInFields(correo, contrasena) {
-  if (!correo?.trim() || !contrasena?.trim()) {
+  const hasEmptyFields = isBlankString(correo) || isBlankString(contrasena);
+  if (hasEmptyFields) {
     return ERROR_CODES.VALIDATION_EMPTY_FIELDS;
   }
 
-  if (!EMAIL_REGEX.test(correo)) {
+  if (isValidEmail(correo) === false) {
     return ERROR_CODES.VALIDATION_INVALID_EMAIL;
   }
 

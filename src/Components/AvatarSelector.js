@@ -209,7 +209,7 @@ function AvatarSelector({ open, onClose, currentAvatarId, onSelect }) {
         <Button
           onClick={handleConfirm}
           variant="contained"
-          disabled={!selectedId}
+          disabled={selectedId === "" || selectedId === null}
           sx={{
             backgroundColor: "#f20a95",
             "&:hover": { backgroundColor: "#d1087e" },

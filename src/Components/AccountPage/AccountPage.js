@@ -131,10 +131,11 @@ const NO_DATA_MESSAGE = "No se encontraron datos de tu cuenta.";
 const ROLE_FALLBACK = "Sin rol asignado";
 
 function extractRoleName(user) {
-  if (!user || !user.Rol) {
-    return ROLE_FALLBACK;
+  const hasRoleData = user && user.Rol;
+  if (hasRoleData) {
+    return user.Rol.nombre || ROLE_FALLBACK;
   }
-  return user.Rol.nombre || ROLE_FALLBACK;
+  return ROLE_FALLBACK;
 }
 
 export default function AccountPage() {
@@ -151,10 +152,12 @@ export default function AccountPage() {
   const navigate = useNavigate();
   const id = localStorage.getItem("id");
   const isLogged = localStorage.getItem("isLogged");
+  const hasSessionId = Boolean(id);
+  const hasLoginFlag = Boolean(isLogged);
 
   const { data, error, loading, refetch } = useQuery(GET_USER_BY_ID, {
     variables: { id },
-    skip: !id,
+    skip: hasSessionId === false,
     onError: (queryError) => {
       const resolved = resolveErrorFromException(queryError);
       showError(resolved);
@@ -228,10 +231,9 @@ export default function AccountPage() {
   }
 
   function renderNoSession() {
-    const hasLoginFlag = Boolean(isLogged);
-    const hasMissingId = !id;
+    const isCorruptedSession = hasLoginFlag && hasSessionId === false;
 
-    if (hasLoginFlag && hasMissingId) {
+    if (isCorruptedSession) {
       return (
         <Box sx={STYLES.errorContainer}>
           <Typography variant="h6" color="text.secondary">
@@ -365,7 +367,8 @@ export default function AccountPage() {
   }
 
   function renderContent() {
-    if (!id || !isLogged) {
+    const hasActiveSession = hasSessionId && hasLoginFlag;
+    if (hasActiveSession === false) {
       return renderNoSession();
     }
 
@@ -373,13 +376,15 @@ export default function AccountPage() {
       return renderLoading();
     }
 
-    if (error && !data) {
+    const hasErrorWithoutData = error && data === null;
+    if (hasErrorWithoutData) {
       return renderNoData();
     }
 
     const user = data?.getUserById;
+    const hasUserData = Boolean(user);
 
-    if (!user) {
+    if (hasUserData === false) {
       return renderNoData();
     }
 

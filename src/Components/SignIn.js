@@ -83,8 +83,9 @@ export default function SignIn() {
 
   function processLoginResponse(data) {
     const loggedUser = data?.login;
+    const hasUserData = Boolean(loggedUser);
 
-    if (!loggedUser) {
+    if (hasUserData === false) {
       showError(ERROR_CODES.LOGIN_NULL_RESPONSE);
       return;
     }
@@ -121,6 +122,13 @@ export default function SignIn() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  function renderSubmitButtonContent() {
+    if (isSubmitting) {
+      return <CircularProgress size={24} color="inherit" />;
+    }
+    return "Ingresa";
   }
 
   return (
@@ -185,7 +193,7 @@ export default function SignIn() {
               boxShadow: "10px 5px 5px #09b588",
             }}
           >
-            {isSubmitting ? <CircularProgress size={24} color="inherit" /> : "Ingresa"}
+            {renderSubmitButtonContent()}
           </Button>
           <Grid container>
             <Grid item xs>

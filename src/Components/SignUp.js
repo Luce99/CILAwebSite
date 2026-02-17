@@ -93,7 +93,7 @@ export default function SignUp() {
   const [genero, setGenero] = useState(DEFAULT_GENDER);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedAvatarId, setSelectedAvatarId] = useState(DEFAULT_AVATAR_ID);
-  const [hasManuallySelectedAvatar, setHasManuallySelectedAvatar] = useState(false);
+  const [isUsingDefaultAvatar, setIsUsingDefaultAvatar] = useState(true);
   const [isAvatarSelectorOpen, setAvatarSelectorOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -107,7 +107,7 @@ export default function SignUp() {
     const newGender = event.target.value;
     setGenero(newGender);
 
-    if (!hasManuallySelectedAvatar) {
+    if (isUsingDefaultAvatar) {
       const defaultForGender = getDefaultAvatarByGender(newGender);
       setSelectedAvatarId(defaultForGender);
     }
@@ -115,7 +115,7 @@ export default function SignUp() {
 
   function handleAvatarSelect(avatar) {
     setSelectedAvatarId(avatar.id);
-    setHasManuallySelectedAvatar(true);
+    setIsUsingDefaultAvatar(false);
   }
 
   function resetForm() {
@@ -176,6 +176,13 @@ export default function SignUp() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  function renderSubmitButtonContent() {
+    if (isSubmitting) {
+      return <CircularProgress size={24} color="inherit" />;
+    }
+    return "Registrate";
   }
 
   return (
@@ -342,7 +349,7 @@ export default function SignUp() {
                 boxShadow: "10px 5px 5px #09b588",
               }}
             >
-              {isSubmitting ? <CircularProgress size={24} color="inherit" /> : "Registrate"}
+              {renderSubmitButtonContent()}
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
