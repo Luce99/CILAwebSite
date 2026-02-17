@@ -4,7 +4,7 @@ services:
     runtime: node
     region: oregon
     plan: free
-    branch: development
+    branch: main
     rootDir: Backend
     buildCommand: npm install
     startCommand: node index.js
