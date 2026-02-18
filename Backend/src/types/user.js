@@ -29,6 +29,7 @@ type Producto {
 }
 
 type Rol {
+    _id: ID!
     nombre: String!
 }
 
