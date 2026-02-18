@@ -1,30 +1,28 @@
-const productoService = require ("../services/Producto")
+const productoService = require("../services/Producto");
+
 const productoResolvers = {
-
-    Query:{
-        getProductos: async(parent, args)=> {
-            let producto = productoService.getProductos()
-            return producto
-        },
-        getProductosById: async(parent, args)=>{
-            let producto = productoService.getProductosById(args._id)
-            return producto
-        }
+  Query: {
+    getProductos: async () => {
+      return productoService.getProductos();
     },
-    Mutation:{
-        createProducto: async (parent, args) =>{
-            let productos = productoService.createProducto(args)
-            return productos
-        },
-        updateProductos: async (parent, args)=> {
-            let productos = productoService.updateProductos(args._id,args)
-            return productos
-        },
-        deleteProductos: async(parent, args) =>{
-            let productoDelete = productoService.deleteProductos(args._id, args)
-            return productoDelete
-        }
-    }
-}
+    getProductosById: async (parent, args) => {
+      return productoService.getProductosById(args._id);
+    },
+    getProductosByCategory: async (parent, args) => {
+      return productoService.getProductosByCategory(args.category);
+    },
+  },
+  Mutation: {
+    createProducto: async (parent, args) => {
+      return productoService.createProducto(args);
+    },
+    updateProductos: async (parent, args) => {
+      return productoService.updateProductos(args._id, args);
+    },
+    deleteProductos: async (parent, args) => {
+      return productoService.deleteProductos(args._id);
+    },
+  },
+};
 
-module.exports = { productoResolvers}
+module.exports = { productoResolvers };

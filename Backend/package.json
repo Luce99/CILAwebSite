@@ -28,6 +28,8 @@
     "mercadopago": "^2.0.6",
     "mongoose": "^6.2.7",
     "nodemon": "^2.0.15",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.0"
   }
 }

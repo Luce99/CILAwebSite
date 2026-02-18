@@ -1,0 +1,56 @@
+---
+description: Sistema de manejo de errores del proyecto LIMO
+globs: src/**/*.js
+alwaysApply: false
+---
+
+# Sistema de errores
+
+## Estructura
+
+- `src/constants/errorCodes.js`: Diccionario centralizado de errores
+- `src/hooks/useErrorModal.js`: Hook para gestionar el modal de errores
+- `src/Components/ErrorModal.js`: Modal parametrizable de errores
+- `docs/ERROR_DICTIONARY.md`: Documentacion publica de codigos
+
+## Convenciones de codigos de error
+
+Formato: `PREFIJO_NN` (alfanumerico, legible para el usuario)
+
+| Prefijo | Categoria |
+|---|---|
+| NET | Errores de red |
+| AUT | Autenticacion |
+| REG | Registro |
+| VAL | Validacion |
+| SRV | Servidor/GraphQL |
+| GEN | Genericos |
+
+## Cada error tiene dos codigos
+
+- `code`: Tecnico, para logs (ej: `GRAPHQL_INTERNAL_ERROR`)
+- `displayCode`: Para el usuario (ej: `SRV_02`)
+
+## Flujo de error en componentes
+
+```javascript
+try {
+  const { data, errors } = await executeMutation({ variables });
+  if (errors && errors.length > 0) {
+    const resolved = resolveErrorFromException({ graphQLErrors: errors });
+    showError(resolved);
+    return;
+  }
+  processResponse(data);
+} catch (exception) {
+  const resolved = resolveErrorFromException(exception);
+  showError(resolved);
+} finally {
+  setIsSubmitting(false);
+}
+```
+
+## Apollo Client
+
+- Timeout de 12 segundos via `fetchWithTimeout`
+- Detectar `AbortError` como timeout de red (NET_02)

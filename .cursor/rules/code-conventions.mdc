@@ -1,0 +1,109 @@
+---
+description: Convenciones generales de codigo del proyecto LIMO
+alwaysApply: true
+---
+
+# Convenciones de codigo
+
+## Booleanos: nunca negar con !
+
+Prohibido usar `!variable`. Usar variables con nombre positivo o comparacion explicita `=== false`.
+
+```javascript
+// MAL
+if (!id) { ... }
+if (!isLogged) { ... }
+disabled={!selectedId}
+
+// BIEN
+const hasSessionId = Boolean(id);
+if (hasSessionId === false) { ... }
+
+const hasLoginFlag = Boolean(isLogged);
+if (hasLoginFlag === false) { ... }
+
+disabled={selectedId === "" || selectedId === null}
+```
+
+Patron para helpers reutilizables:
+```javascript
+function isEmptyValue(value) {
+  return value === null || value === undefined || value === "";
+}
+```
+
+## Ternarios: prohibidos
+
+No usar `condicion ? valorA : valorB`. Usar funciones helper o bloques if/return.
+
+```javascript
+// MAL
+const color = isActive ? "blue" : "gray";
+{loading ? <Spinner /> : "Enviar"}
+
+// BIEN
+function resolveColor() {
+  if (isActive) {
+    return "blue";
+  }
+  return "gray";
+}
+
+function renderButtonContent() {
+  if (loading) {
+    return <Spinner />;
+  }
+  return "Enviar";
+}
+```
+
+## Comentarios
+
+- **Prohibidos** los comentarios en linea dentro del cuerpo de metodos
+- Solo documentar metodos publicos con JSDoc breve (que hace, parametros, retorno)
+- Si el codigo necesita un comentario para entenderse, refactorizar para que sea autoexplicativo
+
+```javascript
+// MAL
+function calculateTotal(items) {
+  // recorremos los items para sumar precios
+  let total = 0;
+  for (const item of items) {
+    total += item.price; // sumamos el precio
+  }
+  return total;
+}
+
+// BIEN
+/** Calcula el total sumando el precio de cada item. */
+function calculateTotal(items) {
+  let total = 0;
+  for (const item of items) {
+    total += item.price;
+  }
+  return total;
+}
+```
+
+## Nombres claros y descriptivos
+
+- Variables booleanas: prefijo `is`, `has`, `should`, `can`
+- Funciones: verbos claros (`resolve`, `render`, `extract`, `build`, `handle`)
+- Constantes: UPPER_SNAKE_CASE para valores fijos
+- Sin abreviaturas ambiguas
+
+## Metodos cortos y responsabilidad unica
+
+- Un metodo hace una sola cosa
+- Maximo ~20 lineas por metodo; si crece, extraer helpers
+- Cada clase/modulo tiene una sola razon para cambiar
+- Preferir constantes sobre literales repetidos
+
+## DRY y SOLID
+
+- **DRY**: No repetir logica; extraer funciones o constantes compartidas
+- **S**: Responsabilidad unica (un modulo, una razon de cambio)
+- **O**: Abierto a extension, cerrado a modificacion
+- **L**: Subtipos sustituibles por sus tipos base
+- **I**: Interfaces pequenas y especificas, no una interfaz gigante
+- **D**: Depender de abstracciones, no de implementaciones concretas

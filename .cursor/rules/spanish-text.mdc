@@ -1,0 +1,35 @@
+---
+description: Textos en espanol con ortografia correcta
+alwaysApply: true
+---
+
+# Textos en espanol
+
+## Regla principal
+
+Todo texto visible al usuario debe estar en espanol con acentos y tildes correctos.
+
+## Caracteres que se olvidan frecuentemente
+
+| Incorrecto | Correcto |
+|---|---|
+| contrasena | contraseña |
+| direccion | dirección |
+| sesion | sesión |
+| informacion | información |
+| Ocurrio | Ocurrió |
+| mas tarde | más tarde |
+| esta registrado | está registrado |
+| Atencion | Atención |
+| Informacion | Información |
+| Codigo | Código |
+| pagina | página |
+| minimos | mínimos |
+
+## Idioma de respuestas
+
+Responder siempre en espanol al usuario.
+
+## Identificadores de codigo
+
+Los nombres de variables, funciones y campos GraphQL NO llevan tildes (son identificadores de codigo). Solo los strings visibles al usuario deben tener ortografia correcta.
