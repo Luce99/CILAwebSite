@@ -80,16 +80,18 @@ const STYLES = {
     "&:hover": { backgroundColor: "#d1087e" },
   },
   card: {
-    maxWidth: 370,
+    maxWidth: 400,
+    width: "100%",
     backgroundColor: "#78afa9",
     color: "#dedede",
-    padding: "2rem",
+    padding: { xs: "1.2rem", sm: "2rem" },
     display: "flex",
     marginLeft: "auto",
     marginRight: "auto",
     flexDirection: "column",
     marginBottom: "3rem",
     marginTop: "1rem",
+    borderRadius: "12px",
   },
   loadingContainer: {
     display: "flex",
@@ -113,9 +115,12 @@ const STYLES = {
   actionButton: {
     color: "#474444",
     backgroundColor: "#dedede",
-    fontSize: "15px",
+    fontSize: { xs: "0.8rem", sm: "0.9rem" },
     fontWeight: "bold",
     boxShadow: "2.5px 2.5px #474444",
+    textTransform: "none",
+    borderRadius: "8px",
+    "&:hover": { backgroundColor: "#c9c9c9" },
   },
   avatarLabel: {
     textAlign: "center",
@@ -337,25 +342,27 @@ export default function AccountPage() {
               {extractRoleName(user)}
             </p>
           </CardContent>
-          <CardActions>
+          <CardActions sx={{ flexDirection: "column", gap: "8px", px: 0, pt: 2 }}>
             <Button
               variant="contained"
-              style={{ ...STYLES.actionButton, width: 200 }}
+              fullWidth
+              sx={STYLES.actionButton}
               onClick={() => handleEditToggle(user)}
             >
               Editar cuenta
             </Button>
             <Button
               variant="contained"
-              style={{ ...STYLES.actionButton, width: 370 }}
+              fullWidth
+              sx={STYLES.actionButton}
               onClick={openChangePasswordModal}
             >
               Cambiar contraseña
             </Button>
             <Button
               variant="contained"
-              style={{ ...STYLES.actionButton, width: 230 }}
-              className="mt-3 text-danger"
+              fullWidth
+              sx={{ ...STYLES.actionButton, color: "#C0392B" }}
               onClick={openDeleteModal}
             >
               Eliminar cuenta

@@ -128,12 +128,19 @@ const Slide = styled.div`
 	overflow: hidden;
 	transition: .3s ease all;
 	z-index: 10;
-	/* max-height: 500px; */
 	position: relative;
 
 	img {
 		width: 100%;
 		vertical-align: top;
+	}
+
+	@media screen and (max-width: 600px) {
+		min-width: 50%;
+	}
+
+	@media screen and (max-width: 400px) {
+		min-width: 100%;
 	}
 `;
 
