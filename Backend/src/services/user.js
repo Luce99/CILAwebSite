@@ -1,7 +1,10 @@
 const User = require("../models/user");
+const Rol = require("../models/Rol");
 const bcrypt = require("bcryptjs");
 const rondasDeSal = 10;
 const { UserInputError } = require ('apollo-server-errors');
+
+const DEFAULT_ROLE_NAME = "cliente";
 
 const DEFAULT_AVATARS = {
   femenino: "fem-1",
@@ -9,38 +12,49 @@ const DEFAULT_AVATARS = {
   no_especificado: "neu-1",
 };
 
+/** Retorna el avatar por defecto segun el genero. */
 function resolveDefaultAvatar(genero) {
   return DEFAULT_AVATARS[genero] || DEFAULT_AVATARS.no_especificado;
 }
 
-createUser = async (args) => {
-  try {
-    const existingUser = await User.findOne({ correo: args.correo });
-    if (existingUser) {
-      throw new Error("El usuario ya existe");
-    }
-    const hashedPassword = await bcrypt.hash(args.contrasena, rondasDeSal);
-    const genero = args.genero || "no_especificado";
-    const defaultAvatar = resolveDefaultAvatar(genero);
-    let userInstance = new User({
-      nombre: args.nombre,
-      apellido: args.apellido,
-      correo: args.correo,
-      contrasena: hashedPassword,
-      direccion: "",
-      genero: genero,
-      avatar: args.avatar || defaultAvatar,
-      Rol: "6233db911b318e2e210cc8f0",
-    });
-    const userSaved = await userInstance.save();
-    let user = await User.findById(userSaved._id).populate({
-      path: "Rol",
-      model: "Rol",
-    });
-    return user;
-  } catch (err) {
-    throw err;
+/** Busca el rol "cliente" en la base de datos y retorna su ID. */
+async function findDefaultRoleId() {
+  const rol = await Rol.findOne({ nombre: DEFAULT_ROLE_NAME });
+  if (rol) {
+    return rol._id;
   }
+  throw new Error("No se encontró el rol '" + DEFAULT_ROLE_NAME + "' en la base de datos.");
+}
+
+/** Crea un usuario nuevo con rol cliente, avatar segun genero y contraseña encriptada. */
+createUser = async (args) => {
+  const existingUser = await User.findOne({ correo: args.correo });
+  if (existingUser) {
+    throw new Error("El usuario ya existe");
+  }
+
+  const defaultRoleId = await findDefaultRoleId();
+  const hashedPassword = await bcrypt.hash(args.contrasena, rondasDeSal);
+  const genero = args.genero || "no_especificado";
+  const defaultAvatar = resolveDefaultAvatar(genero);
+
+  const userInstance = new User({
+    nombre: args.nombre,
+    apellido: args.apellido,
+    correo: args.correo,
+    contrasena: hashedPassword,
+    direccion: "",
+    genero: genero,
+    avatar: args.avatar || defaultAvatar,
+    Rol: defaultRoleId,
+  });
+
+  const userSaved = await userInstance.save();
+  const user = await User.findById(userSaved._id).populate({
+    path: "Rol",
+    model: "Rol",
+  });
+  return user;
 };
 
 getUsers = async () => {
