@@ -1,0 +1,39 @@
+---
+description: Patrones del backend Node.js/Express/Apollo
+globs: Backend/**/*.js
+alwaysApply: false
+---
+
+# Backend patterns
+
+## Arquitectura
+
+- Express + Apollo Server + Mongoose
+- Capas: models/ -> services/ -> resolvers/ -> types/
+- Cada entidad tiene su propio archivo en cada capa
+
+## MongoDB/Mongoose
+
+- Conexion con reintentos (5 intentos, 3s de delay)
+- Express inicia antes que MongoDB (para health checks)
+- Opciones: serverSelectionTimeoutMS, socketTimeoutMS, connectTimeoutMS
+
+## Validacion
+
+- Usar `UserInputError` de apollo-server-errors para errores de entrada
+- Validar en la capa de servicio, no en el resolver
+- Lanzar errores con mensajes claros en espanol
+
+## Errores del backend
+
+Los mensajes de error del backend se muestran como `detail` en el ErrorModal del frontend. Deben ser descriptivos:
+
+```javascript
+// MAL
+throw new Error("Error");
+
+// BIEN
+throw new UserInputError("Entrada invalida", {
+  errors: [{ property: "correo", message: "El usuario no existe" }],
+});
+```

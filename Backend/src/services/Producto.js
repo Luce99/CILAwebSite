@@ -1,62 +1,76 @@
-const Producto = require('../models/Producto')
-// const userService = require('./user')
-// const carritoService = require('./Project')
-// const fechaHora = new Date();
+const Producto = require("../models/Producto");
 
-createProducto = async(args) =>{
-    let productosInstance = new Producto({
-        // fechaAvance: fechaHora.getTime(),
-        name: args.name,
-        productType: args.productType,
-        category: args.category,
-        price: args.price,
-        image: args.image,
-        description: args.description,
-        stock: args.stock,
-        quantity: 1
-    })
-    created_producto = await productosInstance.save()
-    // await userService.updateAvances(args['estudiante'], created_avances['_id'])
-    // await projectService.updateAvances(args['projects'], created_avances['_id'])
-    return created_producto
+const DEFAULT_QUANTITY = 1;
+
+/** Crea un producto nuevo con todos sus campos incluyendo variaciones. */
+async function createProducto(args) {
+  const productosInstance = new Producto({
+    name: args.name,
+    productType: args.productType,
+    category: args.category,
+    price: args.price,
+    image: args.image,
+    images: args.images || [],
+    colors: args.colors || [],
+    sizes: args.sizes || [],
+    description: args.description,
+    stock: args.stock,
+    quantity: DEFAULT_QUANTITY,
+  });
+  const createdProducto = await productosInstance.save();
+  return createdProducto;
 }
 
-getProductos = async() => {
-    let productos = await Producto.find({})
-    return productos
+/** Retorna todos los productos. */
+async function getProductos() {
+  const productos = await Producto.find({});
+  return productos;
 }
 
-getProductosById = async(productosId)=>{
-    let productos = await Producto.findById(productosId).exec()
-    return productos
+/** Retorna un producto por su ID. */
+async function getProductosById(productosId) {
+  const productos = await Producto.findById(productosId).exec();
+  return productos;
 }
 
-deleteProductos = async(productosId, producto, callback)=>{
-    let productosd = Producto.findByIdAndDelete(productosId, producto, callback, {new: true})
-    return productosd
+/** Retorna productos filtrados por categoria. */
+async function getProductosByCategory(category) {
+  const productos = await Producto.find({ category: category });
+  return productos;
 }
 
-updateProductos = async(productosId, productos)=>{
-    let newProducts = await Producto.findByIdAndUpdate(productosId, productos,{new:true})
-    // await userService.updateAvances(avances['estudiante'], newAvances['_id'])
-    // await projectService.updateAvances(avances['projects'], newAvances['_id'])
-    return newProducts
+/** Elimina un producto por su ID. */
+async function deleteProductos(productosId) {
+  const productoEliminado = await Producto.findByIdAndDelete(productosId);
+  return productoEliminado;
 }
 
-updateVenta = async (productoId, ventaId) => {
-    let producto = await Producto.findByIdAndUpdate(productoId, {
-      $push: {
-        venta: ventaId,
-      },
-    });
-    return producto;
-  };
+/** Actualiza un producto por su ID con los campos proporcionados. */
+async function updateProductos(productosId, productos) {
+  const newProducts = await Producto.findByIdAndUpdate(
+    productosId,
+    productos,
+    { new: true }
+  );
+  return newProducts;
+}
+
+/** Agrega una referencia de venta al producto. */
+async function updateVenta(productoId, ventaId) {
+  const producto = await Producto.findByIdAndUpdate(productoId, {
+    $push: {
+      venta: ventaId,
+    },
+  });
+  return producto;
+}
 
 module.exports = {
-    createProducto,
-    getProductos,
-    getProductosById,
-    deleteProductos,
-    updateProductos,
-    updateVenta
-}
+  createProducto,
+  getProductos,
+  getProductosById,
+  getProductosByCategory,
+  deleteProductos,
+  updateProductos,
+  updateVenta,
+};

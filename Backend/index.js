@@ -6,6 +6,8 @@ const { ApolloServer } = require("apollo-server-express");
 const { resolvers } = require("./src/resolvers");
 const { types } = require("./src/types");
 const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+const { swaggerSpec } = require("./src/config/swagger");
 const paymentRoutes = require("./src/routes/paymentRoutes");
 const Rol = require("./src/models/Rol");
 
@@ -27,6 +29,11 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/payments", paymentRoutes);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get("/api-docs.json", (_req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(swaggerSpec);
+});
 
 app.get("/health", (_req, res) => {
   const dbState = mongoose.connection.readyState;
@@ -97,6 +104,7 @@ async function startServer() {
   app.listen(PORT, () => {
     console.log(`Servidor iniciado en el puerto ${PORT}`);
     console.log(`GraphQL disponible en http://localhost:${PORT}${server.graphqlPath}`);
+    console.log(`Swagger UI disponible en http://localhost:${PORT}/api-docs`);
   });
 
   connectToMongoDB();

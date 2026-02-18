@@ -1,0 +1,54 @@
+---
+description: Patrones de React y componentes del proyecto LIMO
+globs: src/**/*.js
+alwaysApply: false
+---
+
+# Patrones React
+
+## Componentes funcionales
+
+Usar siempre componentes funcionales con hooks. No usar clases (excepto ErrorBoundary).
+
+## Renderizado condicional
+
+Extraer en funciones `render*` separadas. Nunca usar ternarios inline.
+
+```javascript
+// MAL
+return isLoading ? <Spinner /> : <Content />;
+
+// BIEN
+function renderContent() {
+  if (isLoading) {
+    return <Spinner />;
+  }
+  return <Content />;
+}
+return renderContent();
+```
+
+## Manejo de errores
+
+- Usar el hook `useErrorModal` para mostrar errores al usuario
+- Usar `resolveErrorFromException` para mapear excepciones a codigos de error
+- Los codigos de error visibles al usuario deben ser alfanumericos (NET_01, AUT_03, SRV_02)
+- Nunca mostrar codigos tecnicos (GRAPHQL_INTERNAL_ERROR) al usuario
+- Validar formularios antes de enviar al backend con funciones `validate*Fields`
+
+## Estilos inline
+
+Usar objetos constantes STYLES en la parte superior del componente:
+
+```javascript
+const STYLES = {
+  container: { display: "flex", padding: "16px" },
+  title: { fontWeight: 600, textAlign: "center" },
+};
+```
+
+## localStorage
+
+- Siempre validar que exista el valor antes de usarlo
+- Usar `Boolean(localStorage.getItem("key"))` para checks
+- Limpiar todos los items relacionados al hacer logout

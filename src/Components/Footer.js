@@ -1,71 +1,140 @@
 import React from "react";
-import Container from "@material-ui/core/Container"
-import Grid from "@material-ui/core/Grid"
-import Box from "@material-ui/core/Box"
-import { Link } from "@material-ui/core";
-import { Icon } from "@mui/material";
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import EmailIcon from '@mui/icons-material/Email';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import InstagramIcon from '@mui/icons-material/Instagram';
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import EmailIcon from "@mui/icons-material/Email";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import { Link } from "react-router-dom";
+import { CATEGORIES } from "./product-data";
 
-export default function Footer(){
-    return (
-        <footer>
-          <Box
-            px={{ xs: 3, sm: 10 }}
-            py={{ xs: 5, sm: 10 }}
-          >
-            <Container maxWidth="lg">
-              <Grid container spacing={5}>
-                <Grid item xs={12} sm={6}>
-                  <Box borderBottom={1} fontSize="20px" fontWeight="bold" marginBottom="1rem">Contacto</Box>
-                  <Box>
-                      {/* tengo que cambiar este WhatsAppWeb porque lleva a las colonias */}
-                    <Link href="https://wa.me/message/OTCJZJCQNK2JO1" target="_blank" color= "inherit">
-                    <Icon>
-                    <WhatsAppIcon/>
-                    </Icon>
-                    +57 3125511227
-                    </Link>
-                  </Box>
-                  <Box>
-                    <Link href="mailto:cila.autenticas@gmail.com"  target="_blank" color="inherit">
-                        <Icon style={{marginTop: "2px"}}>
-                      <EmailIcon/>
-                      </Icon>
-                      cilaAutenticas@gmail.com
-                    </Link>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Box borderBottom={1} fontSize="20px" fontWeight="bold" marginBottom="1rem">Redes sociales</Box>
-                  <Box>
-                    <Link href="https://instagram.com/cila.autenticas?utm_medium=copy_link" target="_blank" color="inherit">
-                        <Icon>
-                            <InstagramIcon/>
-                        </Icon>
-                      Instagram
-                    </Link>
-                  </Box>
-                  <Box>
-                    <Link href="https://www.facebook.com/CILAutenticas/" target="_blank" color="inherit">
-                        <Icon>
-                        <FacebookIcon/>
-                        </Icon>
-                      Facebook
-                    </Link>
-                  </Box>
-                </Grid>
-              </Grid>
-              <Box textAlign="center" pt={{ xs: 5, sm: 10 }} pb={{ xs: 5, sm: 0 }}>
-              CILA autenticas &reg; {new Date().getFullYear()}
-              <br/>
-              <br/>
-              <span>Desarrollado por Lucero Mojica</span>
-              </Box>
-            </Container>
-          </Box>
-        </footer>
-      );
+const BRAND_NAME = "LIMO";
+
+const STYLES = {
+  footer: {
+    backgroundColor: "#1D1D1F",
+    color: "#D1D1D6",
+    padding: "3rem 0 2rem",
+    marginTop: "4rem",
+  },
+  sectionTitle: {
+    fontWeight: 700,
+    fontSize: "0.85rem",
+    color: "#FFFFFF",
+    textTransform: "uppercase",
+    letterSpacing: "1px",
+    marginBottom: "16px",
+  },
+  contactLink: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    color: "#D1D1D6",
+    textDecoration: "none",
+    fontSize: "0.9rem",
+    marginBottom: "8px",
+    "&:hover": {
+      color: "#5E60CE",
+    },
+  },
+  categoryLink: {
+    color: "#D1D1D6",
+    textDecoration: "none",
+    display: "block",
+    fontSize: "0.9rem",
+    marginBottom: "8px",
+  },
+  copyright: {
+    textAlign: "center",
+    paddingTop: "2rem",
+    fontSize: "0.8rem",
+    color: "#6E6E73",
+    borderTop: "1px solid #333",
+    marginTop: "2rem",
+  },
+  socialRow: {
+    display: "flex",
+    gap: "8px",
+    marginTop: "8px",
+  },
+  socialIcon: {
+    color: "#D1D1D6",
+    "&:hover": {
+      color: "#5E60CE",
+    },
+  },
+};
+
+/** Footer con contacto, categorias y redes sociales de LIMO. */
+export default function Footer() {
+  return (
+    <Box sx={STYLES.footer}>
+      <Container maxWidth="lg">
+        <Grid container spacing={4}>
+          <Grid item xs={12} sm={4}>
+            <Typography sx={STYLES.sectionTitle}>Contacto</Typography>
+            <Box
+              component="a"
+              href="https://wa.me/message/OTCJZJCQNK2JO1"
+              target="_blank"
+              sx={STYLES.contactLink}
+            >
+              <WhatsAppIcon fontSize="small" />
+              +57 3125511227
+            </Box>
+            <Box
+              component="a"
+              href="mailto:cila.autenticas@gmail.com"
+              target="_blank"
+              sx={STYLES.contactLink}
+            >
+              <EmailIcon fontSize="small" />
+              contacto@limo.com
+            </Box>
+          </Grid>
+
+          <Grid item xs={12} sm={4}>
+            <Typography sx={STYLES.sectionTitle}>Categorías</Typography>
+            {CATEGORIES.map((cat) => (
+              <Link key={cat.path} to={cat.path} style={STYLES.categoryLink}>
+                {cat.name}
+              </Link>
+            ))}
+          </Grid>
+
+          <Grid item xs={12} sm={4}>
+            <Typography sx={STYLES.sectionTitle}>Síguenos</Typography>
+            <Box sx={STYLES.socialRow}>
+              <IconButton
+                component="a"
+                href="https://instagram.com/cila.autenticas?utm_medium=copy_link"
+                target="_blank"
+                sx={STYLES.socialIcon}
+                size="small"
+              >
+                <InstagramIcon />
+              </IconButton>
+              <IconButton
+                component="a"
+                href="https://www.facebook.com/CILAutenticas/"
+                target="_blank"
+                sx={STYLES.socialIcon}
+                size="small"
+              >
+                <FacebookIcon />
+              </IconButton>
+            </Box>
+          </Grid>
+        </Grid>
+
+        <Typography sx={STYLES.copyright}>
+          {BRAND_NAME} &reg; {new Date().getFullYear()} &mdash; Desarrollado
+          por Lucero Mojica
+        </Typography>
+      </Container>
+    </Box>
+  );
 }

@@ -1,0 +1,38 @@
+---
+description: Convenciones de Git y ramas del proyecto
+alwaysApply: true
+---
+
+# Git workflow
+
+## Ramas
+
+- `main`: Produccion (backend Render + frontend GitHub Pages)
+- `development`: Desarrollo activo
+- Crear ramas desde `development` (o `main` para hotfix)
+
+## Prefijos de ramas
+
+| Prefijo | Uso |
+|---|---|
+| `feature/` | Nueva funcionalidad |
+| `fix/` | Correccion de bug |
+| `release/` | Version para produccion |
+| `hotfix/` | Correccion urgente en produccion |
+
+## Nombres de ramas
+
+- Minusculas con guiones: `feature/add-image-carousel`
+- Para release/hotfix: `release/1.3.0`, `hotfix/1.2.4`
+
+## Despliegue
+
+- Frontend: GitHub Pages (rama `gh-pages`, deploy manual desde `build/`)
+- Backend: Render.com (auto-deploy desde `main`)
+- Siempre hacer merge de `development` a `main` antes de deploy
+
+## Commits
+
+Formato: `tipo: descripcion breve`
+
+Tipos: `feat`, `fix`, `refactor`, `docs`, `style`, `test`, `chore`
