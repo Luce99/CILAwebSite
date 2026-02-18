@@ -18,12 +18,12 @@ const STYLES = {
     boxShadow: "0 2px 8px rgba(0,0,0,.15)",
   },
   navButton: {
-    fontSize: "1rem",
+    fontSize: { xs: "0.75rem", sm: "0.85rem", md: "1rem" },
     fontWeight: 700,
-    letterSpacing: "2px",
+    letterSpacing: { xs: "1px", md: "2px" },
     color: "#F5EDE3",
     textTransform: "uppercase",
-    padding: "10px 24px",
+    padding: { xs: "8px 12px", sm: "10px 24px" },
     "&:hover": {
       backgroundColor: "rgba(245, 237, 227, 0.15)",
     },

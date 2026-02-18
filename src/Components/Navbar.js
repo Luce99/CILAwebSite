@@ -28,11 +28,11 @@ const STYLES = {
   },
   brandName: {
     fontWeight: 800,
-    fontSize: "1.6rem",
-    letterSpacing: "4px",
+    fontSize: { xs: "1.1rem", sm: "1.4rem", md: "1.6rem" },
+    letterSpacing: { xs: "2px", md: "4px" },
     color: "#F5EDE3",
     textDecoration: "none",
-    marginRight: "16px",
+    marginRight: { xs: "8px", md: "16px" },
   },
   navLink: {
     fontSize: "0.85rem",
@@ -203,11 +203,15 @@ export default function Navbar() {
           onClose={handleCloseUserMenu}
         >
           {settings.map((setting) => (
-            <MenuItem key={setting.path} onClick={handleCloseUserMenu}>
+            <MenuItem
+              key={setting.path}
+              onClick={handleCloseUserMenu}
+              component={Link}
+              to={setting.path}
+              sx={{ minWidth: 180, py: 1.2 }}
+            >
               <Typography sx={STYLES.menuItemText}>
-                <Link to={setting.path} style={{ color: "inherit", textDecoration: "none" }}>
-                  {setting.label}
-                </Link>
+                {setting.label}
               </Typography>
             </MenuItem>
           ))}

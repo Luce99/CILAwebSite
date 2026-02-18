@@ -27,6 +27,25 @@ main {
   min-height: calc(100vh - 200px);
 }
 
+@media screen and (max-width: 600px) {
+  main {
+    padding: 0 12px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    margin: 1.2rem 0;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+}
+
 p {
   font-weight: 400;
   font-family: system-ui, -apple-system, sans-serif;

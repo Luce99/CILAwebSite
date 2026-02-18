@@ -17,8 +17,8 @@ const STYLES = {
   footer: {
     backgroundColor: "#2C2C2E",
     color: "#D4C5B5",
-    padding: "3rem 0 2rem",
-    marginTop: "4rem",
+    padding: { xs: "2rem 0 1.5rem", sm: "3rem 0 2rem" },
+    marginTop: { xs: "2rem", md: "4rem" },
   },
   sectionTitle: {
     fontWeight: 700,
