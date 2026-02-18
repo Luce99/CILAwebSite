@@ -15,13 +15,13 @@ const BRAND_NAME = "LIMO";
 const STYLES = {
   hero: {
     textAlign: "center",
-    padding: "4rem 1rem 2rem",
+    padding: "4rem 24px 2rem",
   },
   heroTitle: {
     fontSize: "3.5rem",
     fontWeight: 800,
     letterSpacing: "8px",
-    color: "#1D1D1F",
+    color: "#2C2C2E",
     marginBottom: "12px",
   },
   heroSubtitle: {
@@ -40,32 +40,35 @@ const STYLES = {
     marginBottom: "3rem",
   },
   categoryButton: {
-    backgroundColor: "#5E60CE",
+    backgroundColor: "#7C6A56",
     color: "#FFFFFF",
     borderRadius: "24px",
     textTransform: "none",
     fontWeight: 600,
     padding: "8px 24px",
     "&:hover": {
-      backgroundColor: "#4A4CC4",
+      backgroundColor: "#5C4A38",
     },
   },
   sectionTitle: {
     fontSize: "1.8rem",
     fontWeight: 700,
-    color: "#1D1D1F",
+    color: "#2C2C2E",
     textAlign: "center",
     margin: "3rem 0 1.5rem",
     letterSpacing: "2px",
   },
   productsSection: {
-    padding: "0 1rem",
+    padding: "0",
     maxWidth: "1200px",
     margin: "0 auto 3rem",
   },
   slideshowContainer: {
     maxWidth: "900px",
     margin: "0 auto 2rem",
+    padding: "0 24px",
+    overflow: "hidden",
+    borderRadius: "12px",
   },
 };
 

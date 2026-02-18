@@ -15,8 +15,8 @@ const BRAND_NAME = "LIMO";
 
 const STYLES = {
   footer: {
-    backgroundColor: "#1D1D1F",
-    color: "#D1D1D6",
+    backgroundColor: "#2C2C2E",
+    color: "#D4C5B5",
     padding: "3rem 0 2rem",
     marginTop: "4rem",
   },
@@ -32,16 +32,16 @@ const STYLES = {
     display: "flex",
     alignItems: "center",
     gap: "8px",
-    color: "#D1D1D6",
+    color: "#D4C5B5",
     textDecoration: "none",
     fontSize: "0.9rem",
     marginBottom: "8px",
     "&:hover": {
-      color: "#5E60CE",
+      color: "#F5EDE3",
     },
   },
   categoryLink: {
-    color: "#D1D1D6",
+    color: "#D4C5B5",
     textDecoration: "none",
     display: "block",
     fontSize: "0.9rem",
@@ -61,9 +61,9 @@ const STYLES = {
     marginTop: "8px",
   },
   socialIcon: {
-    color: "#D1D1D6",
+    color: "#D4C5B5",
     "&:hover": {
-      color: "#5E60CE",
+      color: "#F5EDE3",
     },
   },
 };

@@ -10,7 +10,7 @@ const STYLES = {
     width: "100%",
     overflow: "hidden",
     borderRadius: "8px",
-    backgroundColor: "#F0F0F0",
+    backgroundColor: "#EDE7DF",
   },
   image: {
     width: "100%",
@@ -92,7 +92,7 @@ export default function ImageCarousel({ images, altText }) {
 
   function resolveDotColor(index) {
     if (index === currentIndex) {
-      return "#5E60CE";
+      return "#7C6A56";
     }
     return "rgba(255,255,255,0.6)";
   }

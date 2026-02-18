@@ -24,7 +24,7 @@ const STYLES = {
 };
 
 const SELECTED_CHIP_STYLE = {
-  backgroundColor: "#5E60CE",
+  backgroundColor: "#7C6A56",
   color: "#FFFFFF",
   fontWeight: 600,
   border: "none",
