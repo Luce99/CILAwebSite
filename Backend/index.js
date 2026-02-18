@@ -60,7 +60,7 @@ function createInitialRoles() {
       if (count > 0) {
         return;
       }
-      const rolesToCreate = ["cliente", "administrador"];
+      const rolesToCreate = ["cliente", "administrador", "colaborador"];
       const savePromises = rolesToCreate.map((roleName) =>
         new Rol({ nombre: roleName })
           .save()

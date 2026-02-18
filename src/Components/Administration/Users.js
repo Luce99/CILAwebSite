@@ -13,19 +13,20 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import useModal from "../hooks/useModal";
 import EditModalUsers from "./Modals/EditModalUsers";
+import CreateUserModal from "./Modals/CreateUserModal";
 import NavAdministrador from "./NavAdministrador";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
-const GET_USERS = gql`
-  query getusers {
-    getUsers {
+const GET_STAFF_USERS = gql`
+  query getStaffUsers($roles: [String!]!) {
+    getUsersByRoles(roles: $roles) {
       _id
       nombre
       apellido
       correo
-      direccion
       Rol {
         _id
         nombre
@@ -35,12 +36,14 @@ const GET_USERS = gql`
 `;
 
 const DELETE_USER = gql`
-  mutation Mutation($id: ID!) {
+  mutation DeleteUser($id: ID!) {
     deleteUser(_id: $id) {
       _id
     }
   }
 `;
+
+const STAFF_ROLES = ["administrador", "colaborador"];
 
 const STYLES = {
   tableContainer: {
@@ -60,7 +63,6 @@ const STYLES = {
     color: "#FFFFFF",
     fontSize: "0.75rem",
     textTransform: "none",
-    mr: 1,
     "&:hover": { backgroundColor: "#5C4A38" },
   },
   deleteButton: {
@@ -70,13 +72,12 @@ const STYLES = {
     textTransform: "none",
     "&:hover": { backgroundColor: "#96281B" },
   },
-  idCell: {
-    maxWidth: 120,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    fontSize: "0.8rem",
-    color: "#6E6E73",
+  createButton: {
+    backgroundColor: "#7C6A56",
+    color: "#FFFFFF",
+    fontWeight: 600,
+    textTransform: "none",
+    "&:hover": { backgroundColor: "#5C4A38" },
   },
   loading: {
     display: "flex",
@@ -86,15 +87,19 @@ const STYLES = {
   },
 };
 
-/** Pagina de gestion de usuarios del panel de administracion. */
+/** Pagina de gestion de usuarios del panel de administracion. Solo muestra admin y colaborador. */
 export default function Users() {
   const [isOpenEditModal, openEditModal, closeEditModal] = useModal();
+  const [isOpenCreateModal, openCreateModal, closeCreateModal] = useModal();
   const [selectedId, setSelectedId] = useState(null);
   const [selectedRole, setSelectedRole] = useState("");
 
-  const { data, loading } = useQuery(GET_USERS);
+  const { data, loading } = useQuery(GET_STAFF_USERS, {
+    variables: { roles: STAFF_ROLES },
+  });
+
   const [deleteUserMutation] = useMutation(DELETE_USER, {
-    refetchQueries: [{ query: GET_USERS }],
+    refetchQueries: [{ query: GET_STAFF_USERS, variables: { roles: STAFF_ROLES } }],
   });
 
   function handleEditClick(user) {
@@ -119,7 +124,7 @@ export default function Users() {
   }
 
   function renderTable() {
-    const users = (data && data.getUsers) || [];
+    const users = (data && data.getUsersByRoles) || [];
 
     return (
       <TableContainer component={Paper} sx={STYLES.tableContainer}>
@@ -178,9 +183,19 @@ export default function Users() {
     <>
       <NavAdministrador />
       <Container maxWidth="lg" sx={{ py: 2 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, color: "#2C2C2E", textAlign: "center", mb: 2 }}>
-          Gestión de Usuarios
-        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, flexWrap: "wrap", gap: 1 }}>
+          <Typography variant="h5" sx={{ fontWeight: 700, color: "#2C2C2E" }}>
+            Gestión de Usuarios
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<PersonAddIcon />}
+            sx={STYLES.createButton}
+            onClick={openCreateModal}
+          >
+            Crear usuario
+          </Button>
+        </Box>
 
         {loading ? renderLoading() : renderTable()}
       </Container>
@@ -190,6 +205,13 @@ export default function Users() {
         handleClose={closeEditModal}
         id={selectedId}
         rolD={selectedRole}
+      />
+
+      <CreateUserModal
+        open={isOpenCreateModal}
+        handleClose={closeCreateModal}
+        refetchQuery={GET_STAFF_USERS}
+        refetchVariables={{ roles: STAFF_ROLES }}
       />
     </>
   );

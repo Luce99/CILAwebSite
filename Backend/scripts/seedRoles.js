@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 const Rol = require("../src/models/Rol");
 
 const MONGODB_URI = process.env.MONGODB_URI;
-const ROLES_TO_CREATE = ["cliente", "administrador"];
+const ROLES_TO_CREATE = ["cliente", "administrador", "colaborador"];
 
 async function seedRoles() {
   console.log("[Seed] Conectando a MongoDB...");

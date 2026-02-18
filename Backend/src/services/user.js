@@ -108,9 +108,17 @@ login = async ({ correo, contrasena }) => {
   return user
 }
 
-updateUser = async (userId, user) => {
-  let new_user = User.findByIdAndUpdate(userId, user, { new: true });
-  return new_user;
+/** Actualiza un usuario. Si se incluye contrasena, la hashea antes de guardar. */
+updateUser = async (userId, userData) => {
+  const hasPlaintextPassword = Boolean(userData.contrasena);
+  if (hasPlaintextPassword) {
+    userData.contrasena = await bcrypt.hash(userData.contrasena, rondasDeSal);
+  }
+  const updatedUser = await User.findByIdAndUpdate(userId, userData, { new: true }).populate({
+    path: "Rol",
+    model: "Rol",
+  });
+  return updatedUser;
 };
 
 deleteUser = async (userId, user, callback) => {
@@ -128,10 +136,53 @@ updateVenta = async (userId, ventaId) => {
 };
 
 
+/** Retorna usuarios cuyo rol coincide con alguno de los nombres proporcionados. */
+getUsersByRoles = async (roleNames) => {
+  const roles = await Rol.find({ nombre: { $in: roleNames } });
+  const roleIds = roles.map((r) => r._id);
+  const users = await User.find({ Rol: { $in: roleIds } }).populate({
+    path: "Rol",
+    model: "Rol",
+  });
+  return users;
+};
+
+/** Crea un usuario staff (admin o colaborador) con rol especifico y contrasena temporal. */
+createStaffUser = async (args) => {
+  const existingUser = await User.findOne({ correo: args.correo });
+  if (existingUser) {
+    throw new Error("Ya existe un usuario con ese correo");
+  }
+
+  const hashedPassword = await bcrypt.hash(args.contrasena, rondasDeSal);
+  const genero = args.genero || "no_especificado";
+  const defaultAvatar = resolveDefaultAvatar(genero);
+
+  const userInstance = new User({
+    nombre: args.nombre,
+    apellido: args.apellido,
+    correo: args.correo,
+    contrasena: hashedPassword,
+    direccion: "",
+    genero: genero,
+    avatar: defaultAvatar,
+    Rol: args.Rol,
+  });
+
+  const userSaved = await userInstance.save();
+  const user = await User.findById(userSaved._id).populate({
+    path: "Rol",
+    model: "Rol",
+  });
+  return user;
+};
+
 module.exports = {
   createUser,
   getUsers,
   getUserById,
+  getUsersByRoles,
+  createStaffUser,
   login,
   updateUser,
   deleteUser,
