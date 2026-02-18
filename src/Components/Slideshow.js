@@ -138,17 +138,21 @@ const Slide = styled.div`
 `;
 
 const TextoSlide = styled.div`
-	background: ${props => props.colorFondo ? props.colorFondo : 'rgba(0,0,0,.3)'};
-	color: ${props => props.colorTexto ? props.colorTexto : '#fff'};
+	background: ${props => props.colorFondo ? props.colorFondo : 'linear-gradient(transparent, rgba(0,0,0,.7))'};
+	color: ${props => props.colorTexto ? props.colorTexto : '#FFFFFF'};
 	width: 100%;
-	padding: 10px 60px;
+	padding: 24px 20px 14px;
 	text-align: center;
 	position: absolute;
 	bottom: 0;
+	font-weight: 700;
+	font-size: 1rem;
+	letter-spacing: 3px;
+	text-shadow: 0 1px 4px rgba(0,0,0,.6);
 
 	@media screen and (max-width: 700px) {
 		position: relative;
-		background: #000;
+		background: #2C2C2E;
 	}
 `;
 

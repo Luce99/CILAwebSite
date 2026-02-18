@@ -1,89 +1,52 @@
-import * as React from "react";
+import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { Badge, MenuItem } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Container } from "@mui/material";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
-const pages = [
-  <Link
-    className="link"
-    to="/"
-    style={{ color: "inherit", textDecoration: "inherit" }}
-  >
-    <span>Productos</span>
-  </Link>,
-  <Link
-    className="link"
-    to="/users"
-    style={{ color: "inherit", textDecoration: "inherit" }}
-  >
-    <span>Usuarios</span>
-  </Link>,
-  <Link
-  className="link"
-  to="/users"
-  style={{ color: "inherit", textDecoration: "inherit" }}
->
-  <span>Ventas</span>
-</Link>,
+const ADMIN_PAGES = [
+  { label: "Productos", path: "/" },
+  { label: "Usuarios", path: "/users" },
+  { label: "Ventas", path: "/ventas" },
 ];
 
+const STYLES = {
+  appBar: {
+    backgroundColor: "#2C2C2E",
+    boxShadow: "0 2px 8px rgba(0,0,0,.15)",
+  },
+  navButton: {
+    fontSize: "1rem",
+    fontWeight: 700,
+    letterSpacing: "2px",
+    color: "#F5EDE3",
+    textTransform: "uppercase",
+    padding: "10px 24px",
+    "&:hover": {
+      backgroundColor: "rgba(245, 237, 227, 0.15)",
+    },
+  },
+  navLink: {
+    color: "inherit",
+    textDecoration: "none",
+  },
+};
+
+/** Barra de navegacion del panel de administracion. */
 export default function NavAdministrador() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const isLogged = localStorage.getItem("isLogged");
-  const history =useNavigate();
-
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
   return (
-    <AppBar
-      position="static"
-      style={{
-        backgroundColor: "transparent",
-        boxShadow: "0px 0px 0px 0px",
-        color: "white",
-      }}
-    >
+    <AppBar position="static" sx={STYLES.appBar}>
       <Container maxWidth="xl">
-        <Toolbar disableGutters className="menuAdmin">
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <div className="navAdmin">
-              {pages.map((page) => (
-                <Button
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  style={{
-                    fontSize: "20px",
-                    fontWeight: "bold",
-                    color: "#ffffff",
-                  }}
-                >
-                  {page}
-                </Button>
-              ))}
-            </div>
-          </Box>
+        <Toolbar disableGutters sx={{ justifyContent: "center", gap: "8px" }}>
+          {ADMIN_PAGES.map((page) => (
+            <Button key={page.path} sx={STYLES.navButton}>
+              <Link to={page.path} style={STYLES.navLink}>
+                {page.label}
+              </Link>
+            </Button>
+          ))}
         </Toolbar>
       </Container>
     </AppBar>
