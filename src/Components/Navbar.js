@@ -23,39 +23,39 @@ const ADMIN_ROLE_NAME = "administrador";
 
 const STYLES = {
   appBar: {
-    backgroundColor: "#1D1D1F",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+    backgroundColor: "#2C2C2E",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
   },
   brandName: {
     fontWeight: 800,
     fontSize: "1.6rem",
     letterSpacing: "4px",
-    color: "#FFFFFF",
+    color: "#F5EDE3",
     textDecoration: "none",
     marginRight: "16px",
   },
   navLink: {
     fontSize: "0.85rem",
     fontWeight: 500,
-    color: "#D1D1D6",
+    color: "#D4C5B5",
     textTransform: "uppercase",
     letterSpacing: "1px",
     "&:hover": {
-      color: "#5E60CE",
+      color: "#E8DDD1",
     },
   },
   authButton: {
     fontSize: "0.85rem",
     fontWeight: 600,
-    color: "#FFFFFF",
+    color: "#F5EDE3",
     textTransform: "none",
   },
   iconColor: {
-    color: "#FFFFFF",
+    color: "#F5EDE3",
   },
   menuItemText: {
     fontWeight: 600,
-    color: "#5E60CE",
+    color: "#7C6A56",
   },
 };
 

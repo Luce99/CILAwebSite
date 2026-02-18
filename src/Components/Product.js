@@ -34,13 +34,13 @@ const STYLES = {
   productName: {
     fontSize: "0.95rem",
     fontWeight: 600,
-    color: "#1D1D1F",
+    color: "#2C2C2E",
     lineHeight: 1.3,
   },
   price: {
     fontSize: "1rem",
     fontWeight: 700,
-    color: "#5E60CE",
+    color: "#7C6A56",
     whiteSpace: "nowrap",
   },
   productType: {
@@ -58,7 +58,7 @@ const STYLES = {
     padding: "8px 12px 12px",
   },
   addButton: {
-    backgroundColor: "#5E60CE",
+    backgroundColor: "#7C6A56",
     color: "#FFFFFF",
     borderRadius: "8px",
     textTransform: "none",
@@ -66,7 +66,7 @@ const STYLES = {
     fontSize: "0.85rem",
     padding: "6px 16px",
     "&:hover": {
-      backgroundColor: "#4A4CC4",
+      backgroundColor: "#5C4A38",
     },
   },
   shareIcon: {

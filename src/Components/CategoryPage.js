@@ -22,7 +22,7 @@ const STYLES = {
   title: {
     fontSize: "2rem",
     fontWeight: 700,
-    color: "#1D1D1F",
+    color: "#2C2C2E",
     textAlign: "center",
     marginBottom: "2rem",
     letterSpacing: "2px",
