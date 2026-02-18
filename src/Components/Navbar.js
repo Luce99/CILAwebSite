@@ -20,6 +20,7 @@ import { CATEGORIES } from "./product-data";
 
 const BRAND_NAME = "LIMO";
 const ADMIN_ROLE_NAME = "administrador";
+const COLLABORATOR_ROLE_NAME = "colaborador";
 
 const STYLES = {
   appBar: {
@@ -65,11 +66,13 @@ function buildUserMenuItems(isLogged, rolString) {
     return [{ label: "Cuenta", path: "/signin" }];
   }
 
-  const isAdmin = rolString && rolString.includes(ADMIN_ROLE_NAME);
-  if (isAdmin) {
+  const isStaff =
+    (rolString && rolString.includes(ADMIN_ROLE_NAME)) ||
+    (rolString && rolString.includes(COLLABORATOR_ROLE_NAME));
+  if (isStaff) {
     return [
       { label: "Cuenta", path: "/accountPage" },
-      { label: "Administración", path: "/admistracion" },
+      { label: "Administración", path: "/administracion" },
     ];
   }
 

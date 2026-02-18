@@ -36,6 +36,7 @@ type Rol {
 type Query {
     getUsers: [User]
     getUserById(_id:String!): User
+    getUsersByRoles(roles: [String!]!): [User]
 }
 type Mutation {
     createUser(
@@ -73,6 +74,13 @@ type Mutation {
         direccion: String
         avatar: String
         Rol: ID
+        ): User
+    createStaffUser(
+        nombre: String!
+        apellido: String!
+        correo: String!
+        contrasena: String!
+        Rol: ID!
         ): User
 }
 `;

@@ -1,78 +1,142 @@
-import { gql,useMutation } from '@apollo/client';
-import React, { useState } from 'react'
-import { useEffect } from 'react';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
-import { Box } from "@mui/material";
+import React, { useState } from "react";
+import { gql, useMutation } from "@apollo/client";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-const bcrypt = require("bcryptjs");
-const rondasDeSal = 10;
+import Typography from "@mui/material/Typography";
+import Alert from "@mui/material/Alert";
 
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-    display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-around",
-  };
-
-export default function ChangePasswordModal({open, handleClose, id, contrasenaD}){
-
-    const [contrasena, setContrasena]= useState("")
-
-
-    useEffect(() =>{
-        setContrasena(contrasenaD);
-    }, [contrasenaD])
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const hashedPassword = bcrypt.hash(contrasena, rondasDeSal);
-        changePassword({
-          variables: {
-            id: id,
-            contrasena: hashedPassword,
-          },
-        });
-        handleClose();
-        window.location.reload()
-      };
-
-      const updateUser = gql`
-     mutation Mutation($id: ID!, $contrasena: String) {
-  updateUser(_id: $id, contrasena: $contrasena) {
-    _id
-    contrasena
+const UPDATE_PASSWORD = gql`
+  mutation UpdatePassword($id: ID!, $contrasena: String) {
+    updateUser(_id: $id, contrasena: $contrasena) {
+      _id
+    }
   }
-}`
+`;
 
-    const [changePassword] = useMutation(updateUser);
+const MODAL_STYLE = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  maxWidth: 450,
+  width: "90%",
+  bgcolor: "#FAF6F1",
+  borderRadius: "12px",
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+};
 
-    return (
-        <Modal open={open} onClose={handleClose}  aria-labelledby="Cambiar contraseña">
-            <Box component="form" onSubmit={handleSubmit} sx={style}>
-            <TextField
-                  required
-                  fullWidth
-                  id="password"
-                  label="Nueva contraseña"
-                  name="password"
-                  autoComplete="password"
-                value={contrasena}
-                onChange={(evt) => setContrasena(evt.target.value)}
-                />
-                <div claassName="botonModal">
-                <Button variant="contained" style={{backgroundColor:"#f20a95", marginRight: "6rem", marginTop: "1rem"}} onClick={handleClose}>Cancelar</Button>
-                <Button variant="contained" style={{backgroundColor:"#f20a95", marginTop: "1rem"}} onClick= {handleSubmit}>Actualizar</Button>
-                </div>
-            </Box>
-        </Modal>
-    )
+const BUTTON_STYLE = {
+  backgroundColor: "#7C6A56",
+  color: "#FFFFFF",
+  fontWeight: 600,
+  textTransform: "none",
+  "&:hover": { backgroundColor: "#5C4A38" },
+};
+
+const CANCEL_STYLE = {
+  color: "#7C6A56",
+  borderColor: "#7C6A56",
+  fontWeight: 600,
+  textTransform: "none",
+  "&:hover": { borderColor: "#5C4A38", color: "#5C4A38" },
+};
+
+const MIN_PASSWORD_LENGTH = 6;
+
+/** Modal para cambiar la contrasena del usuario. Envia texto plano al backend. */
+export default function ChangePasswordModal({ open, handleClose, id }) {
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [changePassword] = useMutation(UPDATE_PASSWORD);
+
+  function resetForm() {
+    setNewPassword("");
+    setConfirmPassword("");
+    setErrorMessage("");
+  }
+
+  function handleCloseModal() {
+    resetForm();
+    handleClose();
+  }
+
+  function validatePasswords() {
+    const isTooShort = newPassword.length < MIN_PASSWORD_LENGTH;
+    if (isTooShort) {
+      return "La contraseña debe tener al menos " + MIN_PASSWORD_LENGTH + " caracteres";
+    }
+
+    const passwordsMatch = newPassword === confirmPassword;
+    if (passwordsMatch === false) {
+      return "Las contraseñas no coinciden";
+    }
+
+    return "";
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    const validationError = validatePasswords();
+    if (validationError) {
+      setErrorMessage(validationError);
+      return;
+    }
+
+    changePassword({
+      variables: { id: id, contrasena: newPassword },
+    })
+      .then(() => {
+        handleCloseModal();
+        window.location.reload();
+      })
+      .catch((err) => {
+        setErrorMessage("Error al cambiar la contraseña: " + err.message);
+      });
+  }
+
+  return (
+    <Modal open={open} onClose={handleCloseModal} aria-labelledby="Cambiar contraseña">
+      <Box component="form" onSubmit={handleSubmit} sx={MODAL_STYLE}>
+        <Typography variant="h6" sx={{ fontWeight: 700, color: "#2C2C2E", textAlign: "center" }}>
+          Cambiar contraseña
+        </Typography>
+
+        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+
+        <TextField
+          required
+          fullWidth
+          type="password"
+          label="Nueva contraseña"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+
+        <TextField
+          required
+          fullWidth
+          type="password"
+          label="Confirmar contraseña"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+
+        <Box sx={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+          <Button variant="outlined" sx={CANCEL_STYLE} onClick={handleCloseModal}>
+            Cancelar
+          </Button>
+          <Button variant="contained" sx={BUTTON_STYLE} type="submit">
+            Actualizar
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
+  );
 }

@@ -1,37 +1,34 @@
-const user = require("../models/user")
-const userService = require ("../services/user")
+const userService = require("../services/user");
 
 const userResolvers = {
-    Query:{
-        getUsers: async(parent,args)=>{
-            let users =  await userService.getUsers()
-            return users
-        },
-        getUserById: async (parent,args)=>{
-            let user = await userService.getUserById(args._id)
-            return user
-        },
+  Query: {
+    getUsers: async () => {
+      return userService.getUsers();
     },
-    Mutation:{
-        login: async (parent, args) => {
-            const user = await userService.login(args)
-            return user
-        },
-        createUser: async(parent, args) => {
-            let user = await userService.createUser(args)
-            return user
-        },
-        updateUser: async(parent, args) => {
-            let userUpdate = userService.updateUser(args._id, args)
-            return userUpdate
-        },
-        deleteUser: async(parent, args) =>{
-            let userDelete = userService.deleteUser(args._id, args)
-            return userDelete
-        }
-    }
-}
+    getUserById: async (parent, args) => {
+      return userService.getUserById(args._id);
+    },
+    getUsersByRoles: async (parent, args) => {
+      return userService.getUsersByRoles(args.roles);
+    },
+  },
+  Mutation: {
+    login: async (parent, args) => {
+      return userService.login(args);
+    },
+    createUser: async (parent, args) => {
+      return userService.createUser(args);
+    },
+    updateUser: async (parent, args) => {
+      return userService.updateUser(args._id, args);
+    },
+    deleteUser: async (parent, args) => {
+      return userService.deleteUser(args._id, args);
+    },
+    createStaffUser: async (parent, args) => {
+      return userService.createStaffUser(args);
+    },
+  },
+};
 
-module.exports = {
-    userResolvers
-}
+module.exports = { userResolvers };
